@@ -1,0 +1,10 @@
+node_modules
+src
+test
+tsconfig.base.json
+tsconfig.json
+yarn.lock
+jest.config.js
+.eslintrc.js
+.eslintignore
+build/lib/tsconfig.tsbuildinfo
