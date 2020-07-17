@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "incremental": true,
+    "rootDir": ".",
+    "outDir": "../build/lib",
+    "declaration": true,
+    "declarationDir": "../build/typings",
+  },
+  "include": ["**/*.ts"],
+}
