@@ -1,0 +1,11 @@
+.vscode
+dist
+compose
+node_modules
+tpl-node-app
+.env
+.gitignore
+.npmignore
+.dockerignore
+Dockerfile
+README.md

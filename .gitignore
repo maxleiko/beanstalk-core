@@ -1,2 +1,4 @@
 node_modules
-build
+dist
+.out
+tpl-node-app

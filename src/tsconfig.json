@@ -1,11 +1,10 @@
 {
-  "extends": "../tsconfig.base.json",
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "incremental": true,
-    "rootDir": ".",
-    "outDir": "../build/lib",
-    "declaration": true,
-    "declarationDir": "../build/typings",
+    "target": "ES2019",
+    "moduleResolution": "Node",
+    "module": "CommonJS",
+    "outDir": "../.out",
+    "sourceMap": true,
   },
-  "include": ["**/*.ts"],
 }
