@@ -7,6 +7,6 @@ COPY          . /home/node/app
 RUN           yarn package
 
 FROM          alpine:3.12.0
-COPY --from=0 /home/node/app/tpl-node-app /usr/local/bin/
+COPY --from=0 /home/node/app/bsc /usr/local/bin/
 ENV           NODE_ENV=production
-ENTRYPOINT    [ "tpl-node-app" ]
+ENTRYPOINT    [ "bsc" ]

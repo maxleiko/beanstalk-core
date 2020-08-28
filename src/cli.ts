@@ -19,7 +19,7 @@ function parseArgs(): [string[], IOptions] {
   if (args['--help'] || !args._[0]) {
     console.log();
     console.log('   USAGE:');
-    console.log('     tpl-node-app');
+    console.log('     bsc');
     console.log();
     console.log('   OPTIONS:');
     console.log('     --help:                Shows this help message');

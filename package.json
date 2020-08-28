@@ -1,13 +1,13 @@
 {
-  "name": "tpl-node-app",
+  "name": "bsc",
   "version": "0.0.1-alpha",
   "description": "A template to bootstrap a Node.js CJS app written in TypeScript with ESLint & Jest all wired-up",
-  "repository": "https://github.com/maxleiko/tpl-node-app",
+  "repository": "https://github.com/maxleiko/bsc",
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
   "license": "MIT",
   "private": true,
   "bin": {
-    "tpl-node-app": "dist/index.js"
+    "bsc": "dist/index.js"
   },
   "scripts": {
     "clean": "rm -rf dist .out",
@@ -16,10 +16,10 @@
     "prebuild": "yarn clean",
     "build": "ncc build src/cli.ts -o dist --minify",
     "prepackage": "yarn test && yarn build",
-    "package": "nexe dist/index.js -t alpine-x64-12.9.1 -n tpl-node-app",
+    "package": "nexe dist/index.js -t alpine-x64-12.9.1 -n bsc",
     "prestart": "ncc build src/cli.ts -o dist --source-map",
     "start": "node dist/index.js",
-    "docker": "docker build . -t ${NAME:-tpl-node-app/alpine-x64-12.9.1}"
+    "docker": "docker build . -t ${NAME:-bsc/alpine-x64-12.9.1}"
   },
   "devDependencies": {
     "@types/chai": "^4.2.12",

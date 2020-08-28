@@ -2,7 +2,7 @@
 dist
 compose
 node_modules
-tpl-node-app
+bsc
 .env
 .gitignore
 .npmignore

@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   app:
-    image: tpl-node-app/alpine-x64-12.9.1:latest
+    image: bsc/alpine-x64-12.9.1:latest
     build: ..
     environment:
       DUMMY: World

@@ -1,11 +1,11 @@
-## tpl-node-app
+## bsc
 
 A template to bootstrap a Node.js CJS app written in TypeScript with ESLint & Jest all wired-up
 
 ### Usage
 ```sh
-git clone git@github.com:maxleiko/tpl-node-app.git
-cd tpl-node-app
+git clone git@github.com:maxleiko/bsc.git
+cd bsc
 git remote set-url origin <YOUR_REPO_URL>
 yarn
 ```
