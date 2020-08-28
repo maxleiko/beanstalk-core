@@ -1,6 +1,6 @@
 ## @beanstalk/core
 
-Yet another Beanstalkd library
+Yet another Beanstalkd library. With 0 dependency.
 
 ### Available scripts:
  - `clean`: clean the generated bundle
