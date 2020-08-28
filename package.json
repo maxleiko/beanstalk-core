@@ -12,12 +12,11 @@
   "scripts": {
     "clean": "rm -rf dist .out",
     "lint": "eslint --ext .ts,.tsx .",
-    "test": "mocha --ignore src/beanstalkd.test.ts",
+    "test": "mocha",
     "prebuild": "yarn clean",
     "build": "ncc build src/cli.ts -o dist --minify",
     "prepackage": "yarn test && yarn build",
     "package": "nexe dist/index.js -t alpine-x64-12.9.1 -n tpl-node-app",
-    "compile:watch": "tsc -p src --sourceMap -w",
     "prestart": "ncc build src/cli.ts -o dist --source-map",
     "start": "node dist/index.js",
     "docker": "docker build . -t ${NAME:-tpl-node-app/alpine-x64-12.9.1}"

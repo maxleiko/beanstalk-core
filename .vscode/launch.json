@@ -9,8 +9,6 @@
       "args": [
         "--no-timeout"
       ],
-      "outFiles": ["${workspaceRoot}/.out/**/*.js"],
-      "preLaunchTask": "compile:watch"
     }
   ]
 }

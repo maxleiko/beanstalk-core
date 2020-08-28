@@ -11,8 +11,10 @@ yarn
 ```
 
 ### Available scripts:
- - `clean`: removes the generated `./build` directory
- - `compile`: compiles `./src` with TypeScript
- - `build`: triggers `clean` and `compile`
- - `lint`: lint your files using ESLint
- - `test`: runs the tests using Jest
+ - `clean`: clean the generated bundle
+ - `lint`: lints the `src` folder using `ESLint`
+ - `test`: runs the test directly from TypeScript sources using `mocha`
+ - `build`: bundles the whole app into `dist/index.js` using `@vercel/ncc`
+ - `package`: creates a standalone binary using `nexe`
+ - `start`: builds & runs your CLI app
+ - `docker`: builds a `Docker` image targetting `alpine`
