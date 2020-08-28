@@ -1,5 +1,3 @@
-import { S, E } from './protocol';
-
 export interface IPutOptions {
   priority: number;
   delay: number;
@@ -16,9 +14,4 @@ export interface IReleaseOptions {
    * the ready queue. The job will be in the "delayed" state during this time.
    */
   delay: number;
-}
-
-export interface IPendingRequest {
-  successCode: S;
-  errorCodes: E[];
 }

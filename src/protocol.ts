@@ -1,4 +1,5 @@
 import { yamlList } from './yaml-parser';
+import { ParseContext, R } from './internal_types';
 
 /**
  * Success codes
@@ -22,10 +23,6 @@ export enum E {
   JOB_TOO_BIG   = 'JOB_TOO_BIG',
   NOT_FOUND     = 'NOT_FOUND',
 }
-
-export type ParseContext = { buf: Buffer; offset: number };
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type R<T = any> = { value: T };
 
 export type Msg =
   | AnyError

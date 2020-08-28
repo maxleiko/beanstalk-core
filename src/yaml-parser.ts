@@ -1,4 +1,4 @@
-import { ParseContext, R } from './protocol';
+import { ParseContext, R } from './internal_types';
 
 export function yamlList(buf: Buffer): string[] {
   const ctx: ParseContext = { buf, offset: 0 };
