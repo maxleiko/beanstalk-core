@@ -1,10 +1,10 @@
 node_modules
 src
-test
-tsconfig.base.json
+.vscode
 tsconfig.json
+git2version
 yarn.lock
-jest.config.js
+.mocharrc.js
 .eslintrc.js
 .eslintignore
-build/lib/tsconfig.tsbuildinfo
+lib/tsconfig.tsbuildinfo

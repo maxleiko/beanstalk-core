@@ -1,10 +1,16 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "incremental": true,
     "target": "ES2019",
     "moduleResolution": "Node",
     "module": "CommonJS",
-    "outDir": "../.out",
+    "outDir": "../lib",
+    "declaration": true,
     "sourceMap": true,
+    "types": ["node", "mocha"],
   },
+  "include": [
+    "**/*.ts"
+  ]
 }
