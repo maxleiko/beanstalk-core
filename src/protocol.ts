@@ -1,6 +1,21 @@
 import { ParseContext, R } from './internal_types';
-import { Msg, Inserted, Using, Reserved, Ok, Watching, Found, Kicked } from './types';
+import {
+  Msg,
+  Inserted,
+  Using,
+  Reserved,
+  Ok,
+  Watching,
+  Found,
+  Kicked,
+} from './types';
 import { space, integer, crlf, string } from './parse-utils';
+
+export class BeanstalkParseError extends Error {
+  constructor(msg: string, readonly buf: Buffer) {
+    super(msg);
+  }
+}
 
 /**
  * Success codes
@@ -25,17 +40,25 @@ export enum S {
  */
 // prettier-ignore
 export enum E {
-  BURIED        = 'BURIED',
-  DRAINING      = 'DRAINING',
-  EXPECTED_CRLF = 'EXPECTED_CRLF',
-  JOB_TOO_BIG   = 'JOB_TOO_BIG',
-  NOT_FOUND     = 'NOT_FOUND',
-  DEADLINE_SOON = 'DEADLINE_SOON',
-  TIMED_OUT     = 'TIMED_OUT',
-  NOT_IGNORED   = 'NOT_IGNORED',
+  BURIED          = 'BURIED',
+  DRAINING        = 'DRAINING',
+  EXPECTED_CRLF   = 'EXPECTED_CRLF',
+  JOB_TOO_BIG     = 'JOB_TOO_BIG',
+  NOT_FOUND       = 'NOT_FOUND',
+  DEADLINE_SOON   = 'DEADLINE_SOON',
+  TIMED_OUT       = 'TIMED_OUT',
+  NOT_IGNORED     = 'NOT_IGNORED',
+  BAD_FORMAT      = 'BAD_FORMAT',
+  OUT_OF_MEMORY   = 'OUT_OF_MEMORY',
+  INTERNAL_ERROR  = 'INTERNAL_ERROR',
+  UNKNOWN_COMMAND = 'UNKNOWN_COMMAND',
 }
 
 export function parse(buf: Buffer): Msg[] {
+  if (buf.length === 0) {
+    throw new BeanstalkParseError('Empty message', buf);
+  }
+
   const results: Msg[] = [];
   const ctx: ParseContext = { buf, offset: 0 };
   const res: Partial<R> = {};
@@ -75,6 +98,20 @@ export function parse(buf: Buffer): Msg[] {
       results.push({ code: E.TIMED_OUT });
     } else if (token(ctx, E.NOT_IGNORED, true)) {
       results.push({ code: E.NOT_IGNORED });
+    } else if (token(ctx, E.BAD_FORMAT, true)) {
+      results.push({ code: E.BAD_FORMAT });
+    } else if (token(ctx, E.UNKNOWN_COMMAND, true)) {
+      results.push({ code: E.UNKNOWN_COMMAND });
+    } else if (token(ctx, E.OUT_OF_MEMORY, true)) {
+      results.push({ code: E.OUT_OF_MEMORY });
+    } else if (token(ctx, E.INTERNAL_ERROR, true)) {
+      results.push({ code: E.INTERNAL_ERROR });
+    } else if (token(ctx, S.PAUSED, true)) {
+      results.push({ code: S.PAUSED });
+    } else if (token(ctx, S.TOUCHED, true)) {
+      results.push({ code: S.TOUCHED });
+    } else {
+      throw new BeanstalkParseError('Unable to parse beanstalk message', buf);
     }
   }
 
@@ -85,6 +122,7 @@ function found(
   ctx: ParseContext,
   res: Partial<R<[number, Buffer]>>
 ): res is R<[number, Buffer]> {
+  const start = ctx.offset;
   if (token(ctx, S.FOUND)) {
     if (space(ctx)) {
       const id: Partial<R<number>> = {};
@@ -107,10 +145,15 @@ function found(
       }
     }
   }
+  ctx.offset = start;
   return false;
 }
 
-function kicked(ctx: ParseContext, res: Partial<R<number | undefined>>): res is R<number | undefined> {
+function kicked(
+  ctx: ParseContext,
+  res: Partial<R<number | undefined>>
+): res is R<number | undefined> {
+  const start = ctx.offset;
   if (token(ctx, S.KICKED)) {
     if (space(ctx)) {
       if (integer(ctx, res)) {
@@ -123,10 +166,12 @@ function kicked(ctx: ParseContext, res: Partial<R<number | undefined>>): res is 
       return true;
     }
   }
+  ctx.offset = start;
   return false;
 }
 
 function ok(ctx: ParseContext, res: Partial<R<Buffer>>): res is R<Buffer> {
+  const start = ctx.offset;
   if (token(ctx, S.OK)) {
     if (space(ctx)) {
       const len: Partial<R<number>> = {};
@@ -142,6 +187,7 @@ function ok(ctx: ParseContext, res: Partial<R<Buffer>>): res is R<Buffer> {
       }
     }
   }
+  ctx.offset = start;
   return false;
 }
 
@@ -149,6 +195,7 @@ function inserted(
   ctx: ParseContext,
   res: Partial<R<number>>
 ): res is R<number> {
+  const start = ctx.offset;
   if (token(ctx, S.INSERTED)) {
     if (space(ctx)) {
       if (integer(ctx, res)) {
@@ -158,19 +205,23 @@ function inserted(
       }
     }
   }
+  ctx.offset = start;
   return false;
 }
 
 function using(ctx: ParseContext, res: Partial<R<string>>): res is R<string> {
+  const start = ctx.offset;
   if (token(ctx, S.USING)) {
     if (space(ctx)) {
-      if (string(ctx, 13, res)) { // 13: '\r'
+      if (string(ctx, 13, res)) {
+        // 13: '\r'
         if (crlf(ctx)) {
           return true;
         }
       }
     }
   }
+  ctx.offset = start;
   return false;
 }
 
@@ -178,6 +229,7 @@ function watching(
   ctx: ParseContext,
   res: Partial<R<number>>
 ): res is R<number> {
+  const start = ctx.offset;
   if (token(ctx, S.WATCHING)) {
     if (space(ctx)) {
       if (integer(ctx, res)) {
@@ -187,6 +239,7 @@ function watching(
       }
     }
   }
+  ctx.offset = start;
   return false;
 }
 
@@ -194,6 +247,7 @@ function reserved(
   ctx: ParseContext,
   res: Partial<R<[number, Buffer]>>
 ): res is R<[number, Buffer]> {
+  const start = ctx.offset;
   if (token(ctx, S.RESERVED)) {
     if (space(ctx)) {
       const id: Partial<R<number>> = {};
@@ -218,19 +272,33 @@ function reserved(
       }
     }
   }
+  ctx.offset = start;
   return false;
 }
 
 function token(ctx: ParseContext, token: string, withCrlf = false): boolean {
-  if (ctx.buf.toString().startsWith(token, ctx.offset)) {
+  const start = ctx.offset;
+  let index = 0;
+  let valid = true;
+  while (index < token.length) {
+    if (ctx.buf[ctx.offset + index] !== token.charCodeAt(index)) {
+      valid = false;
+      break;
+    }
+    index++;
+  }
+  if (valid) {
     ctx.offset += token.length;
     if (withCrlf) {
       if (crlf(ctx)) {
         return true;
+      } else {
+        ctx.offset = start;
+        return false;
       }
-    } else {
-      return true;
     }
+    return true;
   }
+  ctx.offset = start;
   return false;
 }

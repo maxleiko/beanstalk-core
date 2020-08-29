@@ -288,22 +288,22 @@ export class BeanstalkClient {
    * 
    * This should immediately return one of these responses:
    * 
-   * - "NOT_FOUND\r\n" if the job does not exist or reserved by a client or
+   * - `NOT_FOUND\r\n` if the job does not exist or reserved by a client or
    *   is not either ready, buried or delayed.
    * 
-   * - "RESERVED <id> <bytes>\r\n<data>\r\n". See the description for
+   * - `RESERVED <id> <bytes>\r\n<data>\r\n`. See the description for
    *   the reserve command.
    * 
    * @param id 
    */
-  async reserveJob(id: number): Promise<[number, Buffer]> {
-    const cmd = Buffer.from(`reserve-job ${id}\r\n`);
-    const res = await this._send<Reserved>(cmd);
-    if (res.code === S.RESERVED) {
-      return res.value;
-    }
-    throw new BeanstalkError(`Unable to reserve job id '${id}'`, res.code);
-  }
+  // async reserveJob(id: number): Promise<[number, Buffer]> {
+  //   const cmd = Buffer.from(`reserve-job ${id}\r\n`);
+  //   const res = await this._send<Reserved>(cmd);
+  //   if (res.code === S.RESERVED) {
+  //     return res.value;
+  //   }
+  //   throw new BeanstalkError(`Unable to reserve job id '${id}'`, res.code);
+  // }
 
   /**
    * The release command puts a reserved job back into the ready queue (and marks
@@ -551,7 +551,7 @@ export class BeanstalkClient {
     if (res.code === S.KICKED) {
       return res.value as number;
     }
-    throw new BeanstalkError(`Unable to kick the boundary '${bound}'`, res.code);
+    throw new BeanstalkError('Unable to kick jobs', res.code);
   }
 
   /**
@@ -757,7 +757,7 @@ export class BeanstalkClient {
    * @param tube 
    */
   async pause(tube: string, delay: number): Promise<void> {
-    const cmd = Buffer.from(`pause-tube ${tube} ${delay}`);
+    const cmd = Buffer.from(`pause-tube ${tube} ${delay}\r\n`);
     const res = await this._send<Paused>(cmd);
     if (res.code === S.PAUSED) {
       return;
@@ -818,7 +818,7 @@ export class BeanstalkClient {
    * @param id 
    * @param priority 
    */
-  async bury(id: number, priority = 0): Promise<void> {
+  async bury(id: number, priority = 1024): Promise<void> {
     const cmd = Buffer.from(`bury ${id} ${priority}\r\n`);
     const res = await this._send<Buried>(cmd);
     if (res.code === E.BURIED) {

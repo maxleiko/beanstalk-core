@@ -7,7 +7,7 @@
       "cwd": "${workspaceFolder}",
       "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
       "args": [
-        "--no-timeout"
+        "--no-timeout",
       ],
     }
   ]

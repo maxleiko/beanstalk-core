@@ -1,10 +1,14 @@
 import { expect } from 'chai';
 import { gzipSync, gunzipSync } from 'zlib';
 import { parse, S, E } from './protocol';
-import { Reserved, Ok, Watching } from './types';
+import { Reserved, Ok, Watching, Found, Kicked } from './types';
 import { yamlList } from './yaml-parser';
 
 describe('protocol', () => {
+  it('empty', () => {
+    expect(() => parse(Buffer.from(''))).to.throw('Empty message');
+  });
+
   describe('INSERTED', () => {
     it('single', () => {
       const results = parse(Buffer.from('INSERTED 42\r\n'));
@@ -69,13 +73,65 @@ describe('protocol', () => {
   });
 
   it('OK', () => {
-    const list = ['---', '- default', '- foo', '- bar', '- baz'].join('\n');
-    const msg = Buffer.from(`OK ${list.length}\r\n${list}\r\n`);
-    const results = parse(msg);
+    // prettier-ignore
+    const payload = Buffer.from([
+      '---',
+      '- default',
+      '- foo',
+      '- bar',
+      '- baz',
+      '',
+    ].join('\n'));
+    const results = parse(
+      Buffer.concat([
+        Buffer.from(`OK ${payload.byteLength}\r\n`),
+        payload,
+        Buffer.from('\r\n'),
+      ]),
+    );
     expect(results.length).to.equal(1);
     const res = results[0] as Ok;
     expect(res.code).to.equal(S.OK);
     expect(yamlList(res.value)).to.eql(['default', 'foo', 'bar', 'baz']);
+  });
+
+  it('FOUND', () => {
+    const id = 42;
+    const payload = Buffer.from('123456789');
+    const results = parse(
+      Buffer.concat([
+        Buffer.from(`FOUND ${id} ${payload.byteLength}\r\n`),
+        payload,
+        Buffer.from('\r\n'),
+      ]),
+    );
+    expect(results.length).to.equal(1);
+    const res = results[0] as Found;
+    expect(res.code).to.equal(S.FOUND);
+    expect(res.value[0]).to.equal(id);
+    expect(res.value[1]).to.eql(payload);
+  });
+
+  it('KICKED', () => {
+    const results = parse(Buffer.from('KICKED\r\n'));
+    expect(results.length).to.equal(1);
+    const res = results[0] as Kicked;
+    expect(res.code).to.equal(S.KICKED);
+    expect(res.value).to.be.undefined;
+  });
+
+  it('KICKED (with id)', () => {
+    const id = 42;
+    const results = parse(Buffer.from(`KICKED ${id}\r\n`));
+    expect(results.length).to.equal(1);
+    const res = results[0] as Kicked;
+    expect(res.code).to.equal(S.KICKED);
+    expect(res.value).to.equal(id);
+  });
+
+  it('KICKED (malformed)', () => {
+    const msg = Buffer.from('KICKED\r');
+    expect(() => parse(msg)).to.throw('Unable to parse beanstalk message');
   });
 
   it('JOB_TOO_BIG', () => {
@@ -124,6 +180,12 @@ describe('protocol', () => {
     const results = parse(Buffer.from('DEADLINE_SOON\r\n'));
     expect(results.length).to.equal(1);
     expect(results[0].code).to.equal(E.DEADLINE_SOON);
+  });
+
+  it('NOT_IGNORED', () => {
+    const results = parse(Buffer.from('NOT_IGNORED\r\n'));
+    expect(results.length).to.equal(1);
+    expect(results[0].code).to.equal(E.NOT_IGNORED);
   });
 
   it('TIMED_OUT', () => {

@@ -1,5 +1,7 @@
 import { E, S } from './protocol';
 
+export type Scalar = string | number | boolean;
+
 export interface IPutOptions {
   priority: number;
   delay: number;
