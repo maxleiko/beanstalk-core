@@ -128,7 +128,7 @@ export class BeanstalkClient {
    *    SIGUSR1 signal to the process.
    *
    * @param payload
-   * @param opts
+   * @param opts if undefined; defaults to `{ priority: 0, delay: 0, ttr: 60 }`
    */
   async put(
     payload: Buffer | string,
@@ -329,7 +329,7 @@ export class BeanstalkClient {
    *  - "NOT_FOUND\r\n" if the job does not exist or is not reserved by the client.
    *
    * @param id
-   * @param opts
+   * @param opts if undefined; defaults to `{ priority: 0, delay: 0 }`
    */
   async release(id: number, opts: IReleaseOptions = REL_DEFAULT): Promise<void> {
     const cmd = Buffer.from(`release ${id} ${opts.priority} ${opts.delay}\r\n`);

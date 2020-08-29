@@ -2,7 +2,9 @@
 !lib
 
 # don't publish all the followings
-lib/tsconfig.tsbuildinfo
+lib/*.map
+lib/*.tsbuildinfo
+test
 node_modules
 src
 .vscode

@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import { gzipSync, gunzipSync } from 'zlib';
-import { parse, S, E } from './protocol';
-import { Reserved, Ok, Watching, Found, Kicked } from './types';
-import { yamlList } from './yaml-parser';
+import { parse, S, E } from '../src/protocol';
+import { Reserved, Ok, Watching, Found, Kicked } from '../src/types';
+import { yamlList } from '../src/yaml-parser';
 
 describe('protocol', () => {
   it('empty', () => {

@@ -1,6 +1,6 @@
 module.exports = {
   extensions: ['ts'],
-  spec: 'src/**/*.test.ts',
+  spec: 'test/**/*.test.ts',
   require: 'ts-node/register',
   'inline-diffs': true,
   timeout: 5000,

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { BeanstalkClient } from './client';
-import { IPutOptions } from './types';
+import { BeanstalkClient } from '../src/client';
+import { IPutOptions } from '../src/types';
 
 describe('BeanstalkClient', () => {
   let client: BeanstalkClient;

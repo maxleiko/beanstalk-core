@@ -9,9 +9,9 @@
     "outDir": "../lib",
     "declaration": true,
     "sourceMap": true,
-    "types": ["node", "mocha"],
+    "types": ["node"],
   },
   "include": [
-    "**/*.ts"
+    "**/*.ts",
   ]
 }

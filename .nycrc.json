@@ -3,6 +3,5 @@
   "all": true,
   "check-coverage": true,
   "include": ["src/**/*.ts"],
-  "exclude": ["**/*.test.ts"],
   "reporter": ["lcov", "text"]
 }

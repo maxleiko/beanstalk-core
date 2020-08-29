@@ -1,5 +1,5 @@
-import { BeanstalkError } from './error';
-import { E } from './protocol';
+import { BeanstalkError } from '../src/error';
+import { E } from '../src/protocol';
 import { expect } from 'chai';
 
 describe('BeanstalkError', () => {

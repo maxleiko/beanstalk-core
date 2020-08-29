@@ -1,7 +1,7 @@
-import { char, lf, crlf, integer, float, dot, number, string, space, colon, boolean, scalar } from './parse-utils';
+import { char, lf, crlf, integer, float, dot, number, string, space, colon, boolean, scalar } from '../src/parse-utils';
 import { expect } from 'chai';
-import { R } from './internal_types';
-import { Scalar } from './types';
+import { R } from '../src/internal_types';
+import { Scalar } from '../src/types';
 
 const code = (v: string) => v.charCodeAt(0);
 
