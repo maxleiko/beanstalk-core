@@ -15,15 +15,12 @@ jobs:
         node-version: [10.x, 12.x, 14.x]
 
     steps:
-    - name: Run beanstalkd in Docker for tests
-    - run: sudo docker run --name beanstalkd -d -p "127.0.0.1:11300:11300" schickling/beanstalkd:latest -b /tmp -f0 -z 104857600 -s 104857600
-
     - uses: actions/checkout@v2
-
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - run: sudo docker run --name beanstalkd -d -p "127.0.0.1:11300:11300" schickling/beanstalkd:latest -b /tmp -f0 -z 104857600 -s 104857600
     - run: yarn
     - run: yarn build
     - run: yarn test
