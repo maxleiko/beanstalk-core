@@ -1,3 +1,5 @@
+import { E, S } from './protocol';
+
 export interface IPutOptions {
   priority: number;
   delay: number;
@@ -15,3 +17,34 @@ export interface IReleaseOptions {
    */
   delay: number;
 }
+
+export type Msg =
+  | AnyError
+  | Ok
+  | Inserted
+  | Deleted
+  | Using
+  | Reserved
+  | Released
+  | NotFound
+  | Buried
+  | ExpectedCrlf
+  | JobTooBig
+  | Draining
+  | Watching
+  | NotIgnored;
+
+export type AnyError     = { code: E; };
+export type Deleted      = { code: S.DELETED; };
+export type Released     = { code: S.RELEASED; };
+export type NotFound     = { code: E.NOT_FOUND; };
+export type Buried       = { code: E.BURIED; };
+export type ExpectedCrlf = { code: E.EXPECTED_CRLF; };
+export type JobTooBig    = { code: E.JOB_TOO_BIG; };
+export type Draining     = { code: E.DRAINING; };
+export type NotIgnored   = { code: E.NOT_IGNORED; };
+export type Inserted     = { code: S.INSERTED; value: number; };
+export type Using        = { code: S.USING; value: string; };
+export type Ok           = { code: S.OK; value: string[]; };
+export type Reserved     = { code: S.RESERVED; value: [number, Buffer]; };
+export type Watching     = { code: S.WATCHING; value: number; };

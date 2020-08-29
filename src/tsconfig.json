@@ -2,6 +2,7 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "incremental": true,
+    "tsBuildInfoFile": "../lib/tsconfig.tsbuildinfo",
     "target": "ES2019",
     "moduleResolution": "Node",
     "module": "CommonJS",

@@ -15,7 +15,7 @@ export function yamlList(buf: Buffer): string[] {
 }
 
 function yamlListStart(ctx: ParseContext): boolean {
-  if (ctx.buf.slice(ctx.offset, ctx.offset + 3).toString() === '---\n') {
+  if (ctx.buf.slice(ctx.offset, ctx.offset + 4).toString() === '---\n') {
     ctx.offset += 4;
     return true;
   }
@@ -26,7 +26,7 @@ function yamlListEntry(ctx: ParseContext, res: Partial<R<string>>): res is R<str
   if (ctx.buf.slice(ctx.offset, ctx.offset + 2).toString() === '- ') {
     ctx.offset += 2; // skip '- '
     const start = ctx.offset;
-    while (ctx.buf[ctx.offset] !== 10) { // '\n'
+    while (ctx.offset < ctx.buf.length && ctx.buf[ctx.offset] !== 10) { // '\n'
       ctx.offset++;
     }
     res.value = ctx.buf.slice(start, ctx.offset).toString();

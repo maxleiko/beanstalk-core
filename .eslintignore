@@ -1,4 +1,5 @@
 .eslintrc.js
-build
+dist
+lib
 node_modules
 coverage

@@ -1,3 +1,8 @@
+# lib is .gitignore-d, so un-ignore it here for publishing
+!lib
+
+# don't publish all the followings
+lib/tsconfig.tsbuildinfo
 node_modules
 src
 .vscode
@@ -7,4 +12,3 @@ yarn.lock
 .mocharrc.js
 .eslintrc.js
 .eslintignore
-lib/tsconfig.tsbuildinfo

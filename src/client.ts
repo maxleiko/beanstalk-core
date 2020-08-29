@@ -1,12 +1,25 @@
 import { Socket } from 'net';
 import { EventEmitter } from 'events';
-import { IPutOptions, IReleaseOptions } from './types';
-import { parse, S, Msg, Using, AnyError, Released, Deleted, Inserted, Ok } from './protocol';
+import {
+  IPutOptions,
+  IReleaseOptions,
+  Inserted,
+  Using,
+  Deleted,
+  Released,
+  Ok,
+  Msg,
+  AnyError,
+  Reserved,
+  Watching,
+} from './types';
 import { BeanstalkError } from './error';
+import { S, parse } from './protocol';
 
 const PUT_DEFAULT: IPutOptions = { priority: 0, delay: 0, ttr: 60 };
+const REL_DEFAULT: IReleaseOptions = { priority: 0, delay: 0 };
 
-export default class BeanstalkClient {
+export class BeanstalkClient {
   private _socket: Socket;
   private _pendingRequests: EventEmitter[];
 
@@ -38,7 +51,7 @@ export default class BeanstalkClient {
 
   /**
    * The quit command simply closes the connection. Its form is:
-   * 
+   *
    *     quit\r\n
    */
   quit(): Promise<void> {
@@ -111,7 +124,10 @@ export default class BeanstalkClient {
    * @param payload
    * @param opts
    */
-  async put(payload: Buffer | string, opts: IPutOptions = PUT_DEFAULT): Promise<number> {
+  async put(
+    payload: Buffer | string,
+    opts: IPutOptions = PUT_DEFAULT
+  ): Promise<number> {
     payload = typeof payload === 'string' ? Buffer.from(payload) : payload;
     const head = Buffer.from(
       `put ${opts.priority} ${opts.delay} ${opts.ttr} ${payload.byteLength}\r\n`
@@ -169,7 +185,7 @@ export default class BeanstalkClient {
    * - "NOT_FOUND\r\n" if the job does not exist or is not either reserved by the
    *    client, ready, or buried. This could happen if the job timed out before the
    *    client sent the delete command.
-   * 
+   *
    * @param id
    */
   async delete(id: number): Promise<void> {
@@ -182,32 +198,105 @@ export default class BeanstalkClient {
   }
 
   /**
+   * A process that wants to consume jobs from the queue uses "reserve", "delete",
+   * "release", and "bury". The first worker command, "reserve", looks like this:
+   * 
+   *     reserve\r\n
+   * 
+   * Alternatively, you can specify a timeout as follows:
+   * 
+   *     reserve-with-timeout <seconds>\r\n
+   * 
+   * This will return a newly-reserved job. If no job is available to be reserved,
+   * beanstalkd will wait to send a response until one becomes available. Once a
+   * job is reserved for the client, the client has limited time to run (TTR) the
+   * job before the job times out. When the job times out, the server will put the
+   * job back into the ready queue. Both the TTR and the actual time left can be
+   * found in response to the stats-job command.
+   * 
+   * If more than one job is ready, beanstalkd will choose the one with the
+   * smallest priority value. Within each priority, it will choose the one that
+   * was received first.
+   * 
+   * A timeout value of 0 will cause the server to immediately return either a
+   * response or TIMED_OUT.  A positive value of timeout will limit the amount of
+   * time the client will block on the reserve request until a job becomes
+   * available.
+   * 
+   * During the TTR of a reserved job, the last second is kept by the server as a
+   * safety margin, during which the client will not be made to wait for another
+   * job. If the client issues a reserve command during the safety margin, or if
+   * the safety margin arrives while the client is waiting on a reserve command,
+   * the server will respond with:
+   * 
+   *     DEADLINE_SOON\r\n
+   * 
+   * This gives the client a chance to delete or release its reserved job before
+   * the server automatically releases it.
+   * 
+   *     TIMED_OUT\r\n
+   * 
+   * If a non-negative timeout was specified and the timeout exceeded before a job
+   * became available, or if the client's connection is half-closed, the server
+   * will respond with TIMED_OUT.
+   * 
+   * Otherwise, the only other response to this command is a successful reservation
+   * in the form of a text line followed by the job body:
+   * 
+   *     RESERVED <id> <bytes>\r\n
+   *     <data>\r\n
+   * 
+   *  - <id> is the job id -- an integer unique to this job in this instance of
+   *    beanstalkd.
+   * 
+   *  - <bytes> is an integer indicating the size of the job body, not including
+   *    the trailing "\r\n".
+   * 
+   *  - <data> is the job body -- a sequence of bytes of length <bytes> from the
+   *    previous line. This is a verbatim copy of the bytes that were originally
+   *    sent to the server in the put command for this job.
+   * 
+   * @param timeout 
+   * @returns {[number, Buffer]} `res` with `res[0]` being the `id` and `res[1]` being the `payload`
+   */
+  async reserve(timeout?: number): Promise<[number, Buffer]> {
+    const withTimeout = typeof timeout === 'number';
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    const cmd = withTimeout ? Buffer.from(`reserve-with-timeout ${timeout}\r\n`) : Buffer.from('reserve\r\n');
+    const res = await this._send<Reserved>(cmd);
+    if (res.code === S.RESERVED) {
+      return res.value;
+    }
+    throw new BeanstalkError('Unable to reserve a job', res.code);
+  }
+
+  /**
    * The release command puts a reserved job back into the ready queue (and marks
    * its state as "ready") to be run by any client. It is normally used when the job
    * fails because of a transitory error. It looks like this:
-   * 
+   *
    *     release <id> <pri> <delay>\r\n
-   * 
+   *
    *  - <id> is the job id to release.
-   * 
+   *
    *  - <pri> is a new priority to assign to the job.
-   * 
+   *
    *  - <delay> is an integer number of seconds to wait before putting the job in
    *    the ready queue. The job will be in the "delayed" state during this time.
-   * 
+   *
    * The client expects one line of response, which may be:
-   * 
+   *
    *  - "RELEASED\r\n" to indicate success.
-   * 
+   *
    *  - "BURIED\r\n" if the server ran out of memory trying to grow the priority
    *    queue data structure.
-   * 
+   *
    *  - "NOT_FOUND\r\n" if the job does not exist or is not reserved by the client.
-   * 
-   * @param id 
+   *
+   * @param id
    * @param opts
    */
-  async release(id: number, opts: IReleaseOptions): Promise<void> {
+  async release(id: number, opts: IReleaseOptions = REL_DEFAULT): Promise<void> {
     const cmd = Buffer.from(`release ${id} ${opts.priority} ${opts.delay}\r\n`);
     const res = await this._send<Released>(cmd);
     if (res.code === S.RELEASED) {
@@ -217,18 +306,72 @@ export default class BeanstalkClient {
   }
 
   /**
+   * The "watch" command adds the named tube to the watch list for the current
+   * connection. A reserve command will take a job from any of the tubes in the
+   * watch list. For each new connection, the watch list initially consists of one
+   * tube, named "default".
+   * 
+   *     watch <tube>\r\n
+   * 
+   *  - <tube> is a name at most 200 bytes. It specifies a tube to add to the watch
+   *    list. If the tube doesn't exist, it will be created.
+   * 
+   * The reply is:
+   * 
+   *     WATCHING <count>\r\n
+   * 
+   *  - <count> is the integer number of tubes currently in the watch list.
+   * 
+   * @param tube 
+   */
+  async watch(tube: string): Promise<number> {
+    const cmd = Buffer.from(`watch ${tube}\r\n`);
+    const res = await this._send<Watching>(cmd);
+    if (res.code === S.WATCHING) {
+      return res.value;
+    }
+    throw new BeanstalkError(`Unable to watch tube '${tube}'`, res.code);
+  }
+
+  /**
+   * The "ignore" command is for consumers. It removes the named tube from the
+   * watch list for the current connection.
+   * 
+   *     ignore <tube>\r\n
+   * 
+   * The reply is one of:
+   * 
+   *  - "WATCHING <count>\r\n" to indicate success.
+   * 
+   *    - <count> is the integer number of tubes currently in the watch list.
+   * 
+   *  - "NOT_IGNORED\r\n" if the client attempts to ignore the only tube in its
+   *    watch list.
+   * 
+   * @param tube 
+   */
+  async ignore(tube: string): Promise<number> {
+    const cmd = Buffer.from(`ignore ${tube}\r\n`);
+    const res = await this._send<Watching>(cmd);
+    if (res.code === S.WATCHING) {
+      return res.value;
+    }
+    throw new BeanstalkError(`Unable to ignore tube '${tube}'`, res.code);
+  }
+
+  /**
    * The list-tubes-watched command returns a list tubes currently being watched by
    * the client. Its form is:
-   * 
+   *
    *     list-tubes-watched\r\n
-   * 
+   *
    * The response is:
-   * 
+   *
    *     OK <bytes>\r\n
    *     <data>\r\n
-   * 
+   *
    *  - <bytes> is the size of the following data section in bytes.
-   * 
+   *
    *  - <data> is a sequence of bytes of length <bytes> from the previous line. It
    *    is a YAML file containing watched tube names as a list of strings.
    */
