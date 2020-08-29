@@ -1,4 +1,4 @@
-name: Build
+name: build
 
 on:
   push:
@@ -23,18 +23,3 @@ jobs:
     - run: sudo docker run --name beanstalkd -d -p "127.0.0.1:11300:11300" schickling/beanstalkd:latest -b /tmp -f0 -z 104857600 -s 104857600
     - run: yarn
     - run: yarn build
-
-  deploy:
-    if: github.event_name == 'release'
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-      with:
-        node-version: '10.x'
-        registry-url: 'https://registry.npmjs.org'
-    - run: yarn
-    - run: yarn build
-    - run: npm publish --access public
-      env:
-        NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}    
