@@ -1,6 +1,6 @@
 {
   "name": "@beanstalk/core",
-  "version": "0.0.1-alpha",
+  "version": "0.1.0",
   "description": "Yet another Beanstalkd client library",
   "repository": "https://github.com/maxleiko/beanstalk-core",
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
