@@ -25,4 +25,5 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: yarn
+    - run: sudo docker run --name beanstalkd -d -p "127.0.0.1:11300:11300" schickling/beanstalkd:latest -b /tmp -f0 -z 104857600 -s 104857600
     - run: yarn build
