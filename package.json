@@ -1,6 +1,6 @@
 {
   "name": "@beanstalk/core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Yet another Beanstalkd client library",
   "repository": "https://github.com/maxleiko/beanstalk-core",
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
@@ -12,7 +12,7 @@
     "lint": "eslint --ext .ts,.tsx .",
     "test": "nyc mocha",
     "compile": "tsc -b src",
-    "build": "yarn test && yarn clean && yarn compile"
+    "build": "yarn clean && yarn compile"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.1",
