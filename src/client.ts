@@ -12,9 +12,15 @@ import {
   AnyError,
   Reserved,
   Watching,
+  Found,
+  Kicked,
+  Paused,
+  Touched,
+  Buried,
 } from './types';
 import { BeanstalkError } from './error';
-import { S, parse } from './protocol';
+import { S, parse, E } from './protocol';
+import { yamlList, yamlMap } from './yaml-parser';
 
 const PUT_DEFAULT: IPutOptions = { priority: 0, delay: 0, ttr: 60 };
 const REL_DEFAULT: IReleaseOptions = { priority: 0, delay: 0 };
@@ -271,6 +277,35 @@ export class BeanstalkClient {
   }
 
   /**
+   * A job can be reserved by its id. Once a job is reserved for the client,
+   * the client has limited time to run (TTR) the job before the job times out.
+   * When the job times out, the server will put the job back into the ready queue.
+   * The command looks like this:
+   * 
+   *     reserve-job <id>\r\n
+   * 
+   *  - <id> is the job id to reserve
+   * 
+   * This should immediately return one of these responses:
+   * 
+   * - "NOT_FOUND\r\n" if the job does not exist or reserved by a client or
+   *   is not either ready, buried or delayed.
+   * 
+   * - "RESERVED <id> <bytes>\r\n<data>\r\n". See the description for
+   *   the reserve command.
+   * 
+   * @param id 
+   */
+  async reserveJob(id: number): Promise<[number, Buffer]> {
+    const cmd = Buffer.from(`reserve-job ${id}\r\n`);
+    const res = await this._send<Reserved>(cmd);
+    if (res.code === S.RESERVED) {
+      return res.value;
+    }
+    throw new BeanstalkError(`Unable to reserve job id '${id}'`, res.code);
+  }
+
+  /**
    * The release command puts a reserved job back into the ready queue (and marks
    * its state as "ready") to be run by any client. It is normally used when the job
    * fails because of a transitory error. It looks like this:
@@ -360,6 +395,303 @@ export class BeanstalkClient {
   }
 
   /**
+   * The peek commands let the client inspect a job in the system.
+   * 
+   *  - "peek <id>\r\n" - return job <id>.
+   * 
+   * There are two possible responses, either a single line:
+   * 
+   *  - "NOT_FOUND\r\n" if the requested job doesn't exist or there are no jobs in
+   *    the requested state.
+   * 
+   * Or a line followed by a chunk of data, if the command was successful:
+   * 
+   *     FOUND <id> <bytes>\r\n
+   *     <data>\r\n
+   * 
+   *  - <id> is the job id.
+   * 
+   *  - <bytes> is an integer indicating the size of the job body, not including
+   *    the trailing "\r\n".
+   * 
+   *  - <data> is the job body -- a sequence of bytes of length <bytes> from the
+   *    previous line.
+   * 
+   * @param id
+   */
+  async peek(id: number): Promise<[number, Buffer]> {
+    const cmd = Buffer.from(`peek ${id}\r\n`);
+    const res = await this._send<Found>(cmd);
+    if (res.code === S.FOUND) {
+      return res.value;
+    }
+    throw new BeanstalkError(`Unable to peek job id '${id}'`, res.code);
+  }
+
+  /**
+   * The peek-ready command let the client inspect a job in the currently used tube.
+   * 
+   *  - "peek-ready\r\n" - return the next ready job.
+   * 
+   * There are two possible responses, either a single line:
+   * 
+   *  - "NOT_FOUND\r\n" if the requested job doesn't exist or there are no jobs in
+   *    the requested state.
+   * 
+   * Or a line followed by a chunk of data, if the command was successful:
+   * 
+   *     FOUND <id> <bytes>\r\n
+   *     <data>\r\n
+   * 
+   *  - <id> is the job id.
+   * 
+   *  - <bytes> is an integer indicating the size of the job body, not including
+   *    the trailing "\r\n".
+   * 
+   *  - <data> is the job body -- a sequence of bytes of length <bytes> from the
+   *    previous line.
+   * 
+   */
+  async peekReady(): Promise<[number, Buffer]> {
+    const cmd = Buffer.from(`peek-ready\r\n`);
+    const res = await this._send<Found>(cmd);
+    if (res.code === S.FOUND) {
+      return res.value;
+    }
+    throw new BeanstalkError('Unable to peek the next ready job', res.code);
+  }
+
+  /**
+   * The peek-delayed command let the client inspect a job in the currently used tube.
+   * 
+   *  - "peek-delayed\r\n" - return the delayed job with the shortest delay left.
+   * 
+   * There are two possible responses, either a single line:
+   * 
+   *  - "NOT_FOUND\r\n" if the requested job doesn't exist or there are no jobs in
+   *    the requested state.
+   * 
+   * Or a line followed by a chunk of data, if the command was successful:
+   * 
+   *     FOUND <id> <bytes>\r\n
+   *     <data>\r\n
+   * 
+   *  - <id> is the job id.
+   * 
+   *  - <bytes> is an integer indicating the size of the job body, not including
+   *    the trailing "\r\n".
+   * 
+   *  - <data> is the job body -- a sequence of bytes of length <bytes> from the
+   *    previous line.
+   * 
+   */
+  async peekDelayed(): Promise<[number, Buffer]> {
+    const cmd = Buffer.from(`peek-delayed\r\n`);
+    const res = await this._send<Found>(cmd);
+    if (res.code === S.FOUND) {
+      return res.value;
+    }
+    throw new BeanstalkError('Unable to peek the delayed job with the shortest delay left', res.code);
+  }
+
+  /**
+   * The peek-buried command let the client inspect a job in the currently used tube.
+   * 
+   *  - "peek-buried\r\n" - return the next job in the list of buried jobs.
+   * 
+   * There are two possible responses, either a single line:
+   * 
+   *  - "NOT_FOUND\r\n" if the requested job doesn't exist or there are no jobs in
+   *    the requested state.
+   * 
+   * Or a line followed by a chunk of data, if the command was successful:
+   * 
+   *     FOUND <id> <bytes>\r\n
+   *     <data>\r\n
+   * 
+   *  - <id> is the job id.
+   * 
+   *  - <bytes> is an integer indicating the size of the job body, not including
+   *    the trailing "\r\n".
+   * 
+   *  - <data> is the job body -- a sequence of bytes of length <bytes> from the
+   *    previous line.
+   * 
+   */
+  async peekBuried(): Promise<[number, Buffer]> {
+    const cmd = Buffer.from(`peek-buried\r\n`);
+    const res = await this._send<Found>(cmd);
+    if (res.code === S.FOUND) {
+      return res.value;
+    }
+    throw new BeanstalkError('Unable to peek the next job in the list of buried jobs', res.code);
+  }
+
+  /**
+   * The kick command applies only to the currently used tube. It moves jobs into
+   * the ready queue. If there are any buried jobs, it will only kick buried jobs.
+   * Otherwise it will kick delayed jobs. It looks like:
+   * 
+   *     kick <bound>\r\n
+   * 
+   *  - <bound> is an integer upper bound on the number of jobs to kick. The server
+   *    will kick no more than <bound> jobs.
+   * 
+   * The response is of the form:
+   * 
+   *     KICKED <count>\r\n
+   * 
+   *  - <count> is an integer indicating the number of jobs actually kicked.
+   * 
+   * @param bound 
+   */
+  async kick(bound: number): Promise<number> {
+    const cmd = Buffer.from(`kick ${bound}\r\n`);
+    const res = await this._send<Kicked>(cmd);
+    if (res.code === S.KICKED) {
+      return res.value as number;
+    }
+    throw new BeanstalkError(`Unable to kick the boundary '${bound}'`, res.code);
+  }
+
+  /**
+   * The kick-job command is a variant of kick that operates with a single job
+   * identified by its job id. If the given job id exists and is in a buried or
+   * delayed state, it will be moved to the ready queue of the the same tube where it
+   * currently belongs. The syntax is:
+   * 
+   *     kick-job <id>\r\n
+   * 
+   *  - <id> is the job id to kick.
+   * 
+   * The response is one of:
+   * 
+   *  - "NOT_FOUND\r\n" if the job does not exist or is not in a kickable state. This
+   *    can also happen upon internal errors.
+   * 
+   *  - "KICKED\r\n" when the operation succeeded.
+   * 
+   * @param id
+   */
+  async kickJob(id: number): Promise<void> {
+    const cmd = Buffer.from(`kick-job ${id}\r\n`);
+    const res = await this._send<Kicked>(cmd);
+    if (res.code === S.KICKED) {
+      return;
+    }
+    throw new BeanstalkError(`Unable to kick job id '${id}'`, res.code);
+  }
+
+  /**
+   * The stats-tube command gives statistical information about the specified tube
+   * if it exists. Its form is:
+   * 
+   *     stats-tube <tube>\r\n
+   * 
+   *  - <tube> is a name at most 200 bytes. Stats will be returned for this tube.
+   * 
+   * The response is one of:
+   * 
+   *  - "NOT_FOUND\r\n" if the tube does not exist.
+   * 
+   *  - "OK <bytes>\r\n<data>\r\n"
+   * 
+   *    - <bytes> is the size of the following data section in bytes.
+   * 
+   *    - <data> is a sequence of bytes of length <bytes> from the previous line. It
+   *      is a YAML file with statistical information represented by a dictionary.
+   * 
+   * @param tube 
+   */
+  async statsTube(tube: string): Promise<Record<string, string | number | boolean>> {
+    const cmd = Buffer.from(`stats-tube ${tube}\r\n`);
+    const res = await this._send<Ok>(cmd);
+    if (res.code === S.OK) {
+      return yamlMap(res.value);
+    }
+    throw new BeanstalkError(`Unable to stats tube '${tube}'`, res.code);
+  }
+
+  /**
+   * The stats-job command gives statistical information about the specified job if
+   * it exists. Its form is:
+   * 
+   *     stats-job <id>\r\n
+   * 
+   *  - <id> is a job id.
+   * 
+   * The response is one of:
+   * 
+   *  - "NOT_FOUND\r\n" if the job does not exist.
+   * 
+   *  - "OK <bytes>\r\n<data>\r\n"
+   * 
+   *    - <bytes> is the size of the following data section in bytes.
+   * 
+   *    - <data> is a sequence of bytes of length <bytes> from the previous line. It
+   *      is a YAML file with statistical information represented by a dictionary.
+   * 
+   * @param id 
+   */
+  async statsJob(id: number): Promise<Record<string, string | number | boolean>> {
+    const cmd = Buffer.from(`stats-job ${id}\r\n`);
+    const res = await this._send<Ok>(cmd);
+    if (res.code === S.OK) {
+      return yamlMap(res.value);
+    }
+    throw new BeanstalkError(`Unable to stats job id '${id}'`, res.code);
+  }
+
+  /**
+   * The stats command gives statistical information about the system as a whole.
+   * Its form is:
+   * 
+   *     stats\r\n
+   * 
+   * The server will respond:
+   * 
+   *     OK <bytes>\r\n
+   *     <data>\r\n
+   * 
+   *  - <bytes> is the size of the following data section in bytes.
+   * 
+   *  - <data> is a sequence of bytes of length <bytes> from the previous line. It
+   *    is a YAML file with statistical information represented by a dictionary.
+   */
+  async stats(): Promise<Record<string, string | number | boolean>> {
+    const cmd = Buffer.from(`stats\r\n`);
+    const res = await this._send<Ok>(cmd);
+    if (res.code === S.OK) {
+      return yamlMap(res.value);
+    }
+    throw new BeanstalkError('Unable to stats the system', res.code);
+  }
+
+  /**
+   * The list-tubes command returns a list of all existing tubes. Its form is:
+   * 
+   *     list-tubes\r\n
+   * 
+   * The response is:
+   * 
+   *     OK <bytes>\r\n
+   *     <data>\r\n
+   * 
+   *  - <bytes> is the size of the following data section in bytes.
+   * 
+   *  - <data> is a sequence of bytes of length <bytes> from the previous line. It
+   *    is a YAML file containing all tube names as a list of strings.
+   */
+  async listTubes(): Promise<string[]> {
+    const cmd = Buffer.from('list-tubes\r\n');
+    const res = await this._send<Ok>(cmd);
+    if (res.code === S.OK) {
+      return yamlList(res.value);
+    }
+    throw new BeanstalkError('Unable to list tubes', res.code);
+  }
+
+  /**
    * The list-tubes-watched command returns a list tubes currently being watched by
    * the client. Its form is:
    *
@@ -379,9 +711,120 @@ export class BeanstalkClient {
     const cmd = Buffer.from('list-tubes-watched\r\n');
     const res = await this._send<Ok>(cmd);
     if (res.code === S.OK) {
+      return yamlList(res.value);
+    }
+    throw new BeanstalkError('Unable to list watched tubes', res.code);
+  }
+
+  /**
+   * The list-tube-used command returns the tube currently being used by the
+   * client. Its form is:
+   * 
+   *     list-tube-used\r\n
+   * 
+   * The response is:
+   * 
+   *     USING <tube>\r\n
+   * 
+   *  - <tube> is the name of the tube being used.
+   * 
+   */
+  async listTubeUsed(): Promise<string> {
+    const cmd = Buffer.from('list-tube-used\r\n');
+    const res = await this._send<Using>(cmd);
+    if (res.code === S.USING) {
       return res.value;
     }
-    throw new BeanstalkError(`Unable to list watched tubes`, res.code);
+    throw new BeanstalkError('Unable to list used tube', res.code);
+  }
+
+  /**
+   * The pause-tube command can delay any new job being reserved for a given time. Its form is:
+   * 
+   *     pause-tube <tube-name> <delay>\r\n
+   * 
+   *  - <tube> is the tube to pause
+   * 
+   *  - <delay> is an integer number of seconds < 2**32 to wait before reserving any more
+   *    jobs from the queue
+   * 
+   * There are two possible responses:
+   * 
+   *  - "PAUSED\r\n" to indicate success.
+   * 
+   *  - "NOT_FOUND\r\n" if the tube does not exist.
+   * 
+   * @param tube 
+   */
+  async pause(tube: string, delay: number): Promise<void> {
+    const cmd = Buffer.from(`pause-tube ${tube} ${delay}`);
+    const res = await this._send<Paused>(cmd);
+    if (res.code === S.PAUSED) {
+      return;
+    }
+    throw new BeanstalkError(`Unable to pause tube '${tube}'`, res.code);
+  }
+
+  /**
+   * The "touch" command allows a worker to request more time to work on a job.
+   * This is useful for jobs that potentially take a long time, but you still want
+   * the benefits of a TTR pulling a job away from an unresponsive worker.  A worker
+   * may periodically tell the server that it's still alive and processing a job
+   * (e.g. it may do this on DEADLINE_SOON). The command postpones the auto
+   * release of a reserved job until TTR seconds from when the command is issued.
+   * 
+   * The touch command looks like this:
+   * 
+   *     touch <id>\r\n
+   * 
+   *  - <id> is the ID of a job reserved by the current connection.
+   * 
+   * There are two possible responses:
+   * 
+   *  - "TOUCHED\r\n" to indicate success.
+   * 
+   *  - "NOT_FOUND\r\n" if the job does not exist or is not reserved by the client.
+   * 
+   * @param id 
+   */
+  async touch(id: number): Promise<void> {
+    const cmd = Buffer.from(`touch ${id}\r\n`);
+    const res = await this._send<Touched>(cmd);
+    if (res.code === S.TOUCHED) {
+      return;
+    }
+    throw new BeanstalkError(`Unable to touch job id '${id}'`, res.code);
+  }
+
+  /**
+   * The bury command puts a job into the "buried" state. Buried jobs are put into a
+   * FIFO linked list and will not be touched by the server again until a client
+   * kicks them with the "kick" command.
+   * 
+   * The bury command looks like this:
+   * 
+   *     bury <id> <pri>\r\n
+   * 
+   *  - <id> is the job id to bury.
+   * 
+   *  - <pri> is a new priority to assign to the job.
+   * 
+   * There are two possible responses:
+   * 
+   *  - "BURIED\r\n" to indicate success.
+   * 
+   *  - "NOT_FOUND\r\n" if the job does not exist or is not reserved by the client.
+   * 
+   * @param id 
+   * @param priority 
+   */
+  async bury(id: number, priority = 0): Promise<void> {
+    const cmd = Buffer.from(`bury ${id} ${priority}\r\n`);
+    const res = await this._send<Buried>(cmd);
+    if (res.code === E.BURIED) {
+      return;
+    }
+    throw new BeanstalkError(`Unable to bury job id '${id}'`, res.code);
   }
 
   private async _send<M = Msg>(cmd: Buffer): Promise<M | AnyError> {

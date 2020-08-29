@@ -1,6 +1,6 @@
-import { yamlList } from './yaml-parser';
 import { ParseContext, R } from './internal_types';
-import { Msg, Inserted, Using, Reserved, Ok, Watching } from './types';
+import { Msg, Inserted, Using, Reserved, Ok, Watching, Found, Kicked } from './types';
+import { space, integer, crlf, string } from './parse-utils';
 
 /**
  * Success codes
@@ -14,6 +14,10 @@ export enum S {
   USING    = 'USING',
   OK       = 'OK',
   WATCHING = 'WATCHING',
+  FOUND    = 'FOUND',
+  KICKED   = 'KICKED',
+  PAUSED   = 'PAUSED',
+  TOUCHED  = 'TOUCHED',
 }
 
 /**
@@ -47,6 +51,10 @@ export function parse(buf: Buffer): Msg[] {
       results.push({ code: S.OK, value: res.value } as Ok); // casting to guard from future changes
     } else if (watching(ctx, res)) {
       results.push({ code: S.WATCHING, value: res.value } as Watching); // casting to guard from future changes
+    } else if (found(ctx, res)) {
+      results.push({ code: S.FOUND, value: res.value } as Found); // casting to guard from future changes
+    } else if (kicked(ctx, res)) {
+      results.push({ code: S.KICKED, value: res.value } as Kicked); // casting to guard from future changes
     } else if (token(ctx, S.RELEASED, true)) {
       results.push({ code: S.RELEASED });
     } else if (token(ctx, E.BURIED, true)) {
@@ -73,16 +81,59 @@ export function parse(buf: Buffer): Msg[] {
   return results;
 }
 
-function ok(ctx: ParseContext, res: Partial<R<string[]>>): res is R<string[]> {
+function found(
+  ctx: ParseContext,
+  res: Partial<R<[number, Buffer]>>
+): res is R<[number, Buffer]> {
+  if (token(ctx, S.FOUND)) {
+    if (space(ctx)) {
+      const id: Partial<R<number>> = {};
+      if (integer(ctx, id)) {
+        if (space(ctx)) {
+          const len: Partial<R<number>> = {};
+          if (integer(ctx, len)) {
+            if (crlf(ctx)) {
+              res.value = [
+                id.value,
+                ctx.buf.slice(ctx.offset, ctx.offset + len.value),
+              ];
+              ctx.offset += len.value; // skip bytes len
+              if (crlf(ctx)) {
+                return true;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return false;
+}
+
+function kicked(ctx: ParseContext, res: Partial<R<number | undefined>>): res is R<number | undefined> {
+  if (token(ctx, S.KICKED)) {
+    if (space(ctx)) {
+      if (integer(ctx, res)) {
+        if (crlf(ctx)) {
+          return true;
+        }
+      }
+    } else if (crlf(ctx)) {
+      res.value = undefined;
+      return true;
+    }
+  }
+  return false;
+}
+
+function ok(ctx: ParseContext, res: Partial<R<Buffer>>): res is R<Buffer> {
   if (token(ctx, S.OK)) {
     if (space(ctx)) {
       const len: Partial<R<number>> = {};
+      // <bytes>
       if (integer(ctx, len)) {
-        // <bytes>
         if (crlf(ctx)) {
-          res.value = yamlList(
-            ctx.buf.slice(ctx.offset, ctx.offset + len.value)
-          );
+          res.value = ctx.buf.slice(ctx.offset, ctx.offset + len.value);
           ctx.offset += len.value; // skip bytes len
           if (crlf(ctx)) {
             return true;
@@ -113,7 +164,7 @@ function inserted(
 function using(ctx: ParseContext, res: Partial<R<string>>): res is R<string> {
   if (token(ctx, S.USING)) {
     if (space(ctx)) {
-      if (string(ctx, res)) {
+      if (string(ctx, 13, res)) { // 13: '\r'
         if (crlf(ctx)) {
           return true;
         }
@@ -180,48 +231,6 @@ function token(ctx: ParseContext, token: string, withCrlf = false): boolean {
     } else {
       return true;
     }
-  }
-  return false;
-}
-
-function integer(ctx: ParseContext, res: Partial<R<number>>): res is R<number> {
-  const startOffset = ctx.offset;
-  while (
-    ctx.offset < ctx.buf.length &&
-    ctx.buf[ctx.offset] >= 48 &&
-    ctx.buf[ctx.offset] <= 57
-  ) {
-    // 0-9
-    ctx.offset++;
-  }
-  res.value = parseInt(ctx.buf.slice(startOffset, ctx.offset).toString(), 10);
-  return true;
-}
-
-function string(ctx: ParseContext, res: Partial<R<string>>): res is R<string> {
-  const startOffset = ctx.offset;
-  while (ctx.offset < ctx.buf.length && ctx.buf[ctx.offset] !== 13) {
-    // '\r'
-    ctx.offset++;
-  }
-  res.value = ctx.buf.slice(startOffset, ctx.offset).toString();
-  return true;
-}
-
-function crlf(ctx: ParseContext): boolean {
-  if (ctx.buf[ctx.offset] === 13 && ctx.buf[ctx.offset + 1] === 10) {
-    // '\r' && '\n'
-    ctx.offset += 2;
-    return true;
-  }
-  return false;
-}
-
-function space(ctx: ParseContext): boolean {
-  if (ctx.buf[ctx.offset] === 32) {
-    // ' '
-    ctx.offset++;
-    return true;
   }
   return false;
 }

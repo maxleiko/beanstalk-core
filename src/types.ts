@@ -32,7 +32,11 @@ export type Msg =
   | JobTooBig
   | Draining
   | Watching
-  | NotIgnored;
+  | NotIgnored
+  | Found
+  | Kicked
+  | Paused
+  | Touched;
 
 export type AnyError     = { code: E; };
 export type Deleted      = { code: S.DELETED; };
@@ -43,8 +47,12 @@ export type ExpectedCrlf = { code: E.EXPECTED_CRLF; };
 export type JobTooBig    = { code: E.JOB_TOO_BIG; };
 export type Draining     = { code: E.DRAINING; };
 export type NotIgnored   = { code: E.NOT_IGNORED; };
+export type Paused       = { code: S.PAUSED; };
+export type Touched      = { code: S.TOUCHED; };
 export type Inserted     = { code: S.INSERTED; value: number; };
 export type Using        = { code: S.USING; value: string; };
-export type Ok           = { code: S.OK; value: string[]; };
+export type Ok           = { code: S.OK; value: Buffer; };
 export type Reserved     = { code: S.RESERVED; value: [number, Buffer]; };
+export type Found        = { code: S.FOUND; value: [number, Buffer]; };
 export type Watching     = { code: S.WATCHING; value: number; };
+export type Kicked       = { code: S.KICKED; value: number | undefined; };

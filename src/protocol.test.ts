@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { gzipSync, gunzipSync } from 'zlib';
 import { parse, S, E } from './protocol';
 import { Reserved, Ok, Watching } from './types';
+import { yamlList } from './yaml-parser';
 
 describe('protocol', () => {
   describe('INSERTED', () => {
@@ -74,7 +75,7 @@ describe('protocol', () => {
     expect(results.length).to.equal(1);
     const res = results[0] as Ok;
     expect(res.code).to.equal(S.OK);
-    expect(res.value).to.eql(['default', 'foo', 'bar', 'baz']);
+    expect(yamlList(res.value)).to.eql(['default', 'foo', 'bar', 'baz']);
   });
 
   it('JOB_TOO_BIG', () => {
