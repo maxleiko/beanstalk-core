@@ -828,7 +828,7 @@ export class BeanstalkClient {
 
   private async _send<M = Msg>(cmd: Buffer): Promise<M | AnyError> {
     const emitter = new EventEmitter();
-    // FIXME consider adding a global timeout option to prevent infinite hanging on answers
+
     const resultPromise = new Promise<M | AnyError>((resolve, reject) => {
       emitter.on('resolve', resolve);
       emitter.on('reject', reject);
@@ -836,13 +836,20 @@ export class BeanstalkClient {
 
     this._pendingRequests.push(emitter);
 
-    await this._write(cmd);
-    return resultPromise;
-  }
+    // FIXME consider adding a global timeout option to prevent infinite hanging on answers
+    
+    try {
+      await new Promise((resolve, reject) => {
+        this._socket.write(cmd, (err) => err ? reject(err) : resolve());
+      });
+    } catch (err) {
+      // if an error occured while writing to socket then no response will ever
+      // be received, so the pending request will never dequeue: remove it
+      this._pendingRequests.splice(this._pendingRequests.indexOf(emitter), 1);
+      // re-throw error
+      throw err;
+    }
 
-  private async _write(data: Buffer): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this._socket.write(data, (err) => (err ? reject(err) : resolve()));
-    });
+    return resultPromise;
   }
 }

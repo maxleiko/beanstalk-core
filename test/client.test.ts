@@ -22,6 +22,21 @@ describe('BeanstalkClient', () => {
     await client.delete(id);
   });
 
+
+  it('batch put', async () => {
+    await client.connect(HOST, PORT);
+    const tasks = [
+      client.put('Hello World 0'),
+      client.put('Hello World 1'),
+      client.put('Hello World 2'),
+      client.put('Hello World 4'),
+    ];
+    const ids = await Promise.all(tasks);
+    for (const id of ids) {
+      await client.delete(id);
+    }
+  });
+
   it('reserve', async () => {
     await client.connect(HOST, PORT);
     const i = await client.put('Hello World');
@@ -120,30 +135,6 @@ describe('BeanstalkClient', () => {
     await client.delete(id2);
   });
 
-  const to_delete: number[] = [];
-
-  it('use', async () => {
-    await client.connect(HOST, PORT);
-    const tube = await client.use('foo');
-    expect(tube).to.eql('foo');
-    const tasks = [
-      client.put('Hello World 0'),
-      client.put('Hello World 1'),
-      client.put('Hello World 2'),
-      client.put('Hello World 4'),
-    ];
-    const ids = await Promise.all(tasks);
-    to_delete.push(...ids);
-  });
-
-  it('delete', async () => {
-    await client.connect(HOST, PORT);
-    await client.use('foo');
-    for (const id of to_delete) {
-      await client.delete(id);
-    }
-  });
-
   it('stats', async () => {
     await client.connect(HOST, PORT);
     const stats = await client.stats();
@@ -191,16 +182,16 @@ describe('BeanstalkClient', () => {
 
   it('pause', async () => {
     await client.connect(HOST, PORT);
-    await client.use('foo');
-    await client.pause('foo', 1000);
+    await client.use('paused');
+    await client.pause('paused', 1);
+    // wait a bit
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   });
 
   it('touch', async () => {
     await client.connect(HOST, PORT);
     const id = await client.put('Hello touch', { priority: 0, delay: 0, ttr: 2 });
     const [id2] = await client.reserve();
-    // wait for it to be DEADLINE_SOON'ed by server
-    await new Promise((resolve) => setTimeout(resolve, 1500));
     expect(id2).to.equal(id);
     await client.touch(id);
     await client.delete(id);
