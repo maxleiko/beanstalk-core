@@ -6,6 +6,7 @@ lib/*.map
 lib/*.tsbuildinfo
 compose
 coverage
+docs
 .nyc_ouput
 .github
 test

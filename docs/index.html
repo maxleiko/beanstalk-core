@@ -1,0 +1,208 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@beanstalk/core</title>
+	<meta name="description" content="Documentation for @beanstalk/core">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">@beanstalk/core</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>@beanstalk/core</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#beanstalkcore" id="beanstalkcore" style="color: inherit; text-decoration: none;">
+					<h2>@beanstalk/core</h2>
+				</a>
+				<p>Yet another Beanstalkd library. With 0 dependency.</p>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h3>Installation</h3>
+				</a>
+				<pre><code class="language-sh">yarn add @beanstalk/core</code></pre>
+				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+					<h3>Usage</h3>
+				</a>
+				<a href="#put" id="put" style="color: inherit; text-decoration: none;">
+					<h4>PUT</h4>
+				</a>
+				<pre><code class="language-ts"><span class="hljs-keyword">import</span> { BeanstalkClient } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@beanstalk/core&#x27;</span>;
+
+<span class="hljs-comment">/**
+ * Usage: node put.js
+ */</span>
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">main</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> BeanstalkClient();
+  <span class="hljs-keyword">await</span> client.connect(); <span class="hljs-comment">// defaults to localhost:11300</span>
+
+  <span class="hljs-keyword">const</span> id = <span class="hljs-keyword">await</span> client.put(<span class="hljs-string">&#x27;Hello World&#x27;</span>);
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Job created with &#x27;<span class="hljs-subst">${id}</span>&#x27;`</span>);
+
+  <span class="hljs-keyword">await</span> client.quit();
+}
+
+main().catch(<span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> {
+  <span class="hljs-built_in">console</span>.error(err.message);
+  process.exit(<span class="hljs-number">1</span>);
+});</code></pre>
+				<a href="#reserve" id="reserve" style="color: inherit; text-decoration: none;">
+					<h4>RESERVE</h4>
+				</a>
+				<pre><code class="language-ts"><span class="hljs-keyword">import</span> { BeanstalkClient } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@beanstalk/core&#x27;</span>;
+
+<span class="hljs-comment">/**
+ * Usage: node reserve.js &gt; out
+ */</span>
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">main</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> BeanstalkClient();
+  <span class="hljs-keyword">await</span> client.connect(); <span class="hljs-comment">// defaults to localhost:11300</span>
+
+  <span class="hljs-keyword">await</span> client.watch(<span class="hljs-string">&#x27;my-tube&#x27;</span>);
+  <span class="hljs-keyword">await</span> client.ignore(<span class="hljs-string">&#x27;default&#x27;</span>); <span class="hljs-comment">// &#x27;default&#x27; is watched by default</span>
+
+  <span class="hljs-comment">// hangs until a job gets ready on &#x27;my-tube&#x27;</span>
+  <span class="hljs-keyword">const</span> [id, payload] = <span class="hljs-keyword">await</span> client.reserve();
+  <span class="hljs-built_in">console</span>.error(<span class="hljs-string">`Job ID: <span class="hljs-subst">${id}</span>`</span>);
+  <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+    process.stdout.write(payload, <span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> err ? reject(err) : resolve());
+  });
+
+  <span class="hljs-keyword">await</span> client.quit();
+}
+
+main().catch(<span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> {
+  <span class="hljs-built_in">console</span>.error(err.message);
+  process.exit(<span class="hljs-number">1</span>);
+});</code></pre>
+				<a href="#available-scripts" id="available-scripts" style="color: inherit; text-decoration: none;">
+					<h3>Available scripts:</h3>
+				</a>
+				<ul>
+					<li><code>clean</code>: clean the generated bundle</li>
+					<li><code>lint</code>: lints the <code>src</code> folder using <code>ESLint</code></li>
+					<li><code>test</code>: runs the test directly from TypeScript sources using <code>mocha</code></li>
+					<li><code>compile</code>: compiles the TypeScript <code>src</code> into <code>lib</code></li>
+					<li><code>build</code>: executes <code>test</code>, <code>clean</code> and <code>compile</code></li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_client_.html">&quot;client&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_error_.html">&quot;error&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_index_.html">&quot;index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_internal_types_.html">&quot;internal_<wbr>types&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_parse_utils_.html">&quot;parse-<wbr>utils&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_protocol_.html">&quot;protocol&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_types_.html">&quot;types&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_yaml_parser_.html">&quot;yaml-<wbr>parser&quot;</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,1459 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>BeanstalkClient | @beanstalk/core</title>
+	<meta name="description" content="Documentation for @beanstalk/core">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">@beanstalk/core</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="../modules/_client_.html">&quot;client&quot;</a>
+				</li>
+				<li>
+					<a href="_client_.beanstalkclient.html">BeanstalkClient</a>
+				</li>
+			</ul>
+			<h1>Class BeanstalkClient</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">BeanstalkClient</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_client_.beanstalkclient.html#_pendingrequests" class="tsd-kind-icon">_pending<wbr>Requests</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_client_.beanstalkclient.html#_socket" class="tsd-kind-icon">_socket</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-private"><a href="_client_.beanstalkclient.html#_send" class="tsd-kind-icon">_send</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#bury" class="tsd-kind-icon">bury</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#connect" class="tsd-kind-icon">connect</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#delete" class="tsd-kind-icon">delete</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#ignore" class="tsd-kind-icon">ignore</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#kick" class="tsd-kind-icon">kick</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#kickjob" class="tsd-kind-icon">kick<wbr>Job</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#listtubeused" class="tsd-kind-icon">list<wbr>Tube<wbr>Used</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#listtubes" class="tsd-kind-icon">list<wbr>Tubes</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#listtubeswatched" class="tsd-kind-icon">list<wbr>Tubes<wbr>Watched</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#pause" class="tsd-kind-icon">pause</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#peek" class="tsd-kind-icon">peek</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#peekburied" class="tsd-kind-icon">peek<wbr>Buried</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#peekdelayed" class="tsd-kind-icon">peek<wbr>Delayed</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#peekready" class="tsd-kind-icon">peek<wbr>Ready</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#put" class="tsd-kind-icon">put</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#quit" class="tsd-kind-icon">quit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#release" class="tsd-kind-icon">release</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#reserve" class="tsd-kind-icon">reserve</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#stats" class="tsd-kind-icon">stats</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#statsjob" class="tsd-kind-icon">stats<wbr>Job</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#statstube" class="tsd-kind-icon">stats<wbr>Tube</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#touch" class="tsd-kind-icon">touch</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#use" class="tsd-kind-icon">use</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_client_.beanstalkclient.html#watch" class="tsd-kind-icon">watch</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Beanstalk<wbr>Client<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_client_.beanstalkclient.html" class="tsd-signature-type">BeanstalkClient</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L30">src/client.ts:30</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="_client_.beanstalkclient.html" class="tsd-signature-type">BeanstalkClient</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="_pendingrequests" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _pending<wbr>Requests</h3>
+					<div class="tsd-signature tsd-kind-icon">_pending<wbr>Requests<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">EventEmitter</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L30">src/client.ts:30</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="_socket" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _socket</h3>
+					<div class="tsd-signature tsd-kind-icon">_socket<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Socket</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L29">src/client.ts:29</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-private">
+					<a name="_send" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _send</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">_send&lt;M&gt;<span class="tsd-signature-symbol">(</span>cmd<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">M</span><span class="tsd-signature-symbol"> | </span><a href="../modules/_types_.html#anyerror" class="tsd-signature-type">AnyError</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L841">src/client.ts:841</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>M = <span class="tsd-signature-type">Msg</span></h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>cmd: <span class="tsd-signature-type">Buffer</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">M</span><span class="tsd-signature-symbol"> | </span><a href="../modules/_types_.html#anyerror" class="tsd-signature-type">AnyError</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="bury" class="tsd-anchor"></a>
+					<h3>bury</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">bury<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, priority<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L832">src/client.ts:832</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The bury command puts a job into the &quot;buried&quot; state. Buried jobs are put into a
+										FIFO linked list and will not be touched by the server again until a client
+									kicks them with the &quot;kick&quot; command.</p>
+								</div>
+								<p>The bury command looks like this:</p>
+								<pre><code>bury <span class="hljs-tag">&lt;<span class="hljs-name">id</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">pri</span>&gt;</span>\r\n</code></pre>
+								<ul>
+									<li><p><id> is the job id to bury.</p>
+									</li>
+									<li><p><pri> is a new priority to assign to the job.</p>
+									</li>
+								</ul>
+								<p>There are two possible responses:</p>
+								<ul>
+									<li><p>&quot;BURIED\r\n&quot; to indicate success.</p>
+									</li>
+									<li><p>&quot;NOT_FOUND\r\n&quot; if the job does not exist or is not reserved by the client.</p>
+									</li>
+								</ul>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>id: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> priority: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 1024</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="connect" class="tsd-anchor"></a>
+					<h3>connect</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">connect<span class="tsd-signature-symbol">(</span>host<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, port<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L63">src/client.ts:63</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> host: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;localhost&quot;</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> port: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 11300</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="delete" class="tsd-anchor"></a>
+					<h3>delete</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">delete<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L208">src/client.ts:208</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The delete command removes a job from the server entirely. It is normally used
+										by the client when the job has successfully run to completion. A client can
+										delete jobs that it has reserved, ready jobs, delayed jobs, and jobs that are
+									buried. The delete command looks like this:</p>
+								</div>
+								<pre><code>delete &lt;id&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<ul>
+									<li><id> is the job id to delete.</li>
+								</ul>
+								<p>The client then waits for one line of response, which may be:</p>
+								<ul>
+									<li><p>&quot;DELETED\r\n&quot; to indicate success.</p>
+									</li>
+									<li><p>&quot;NOT_FOUND\r\n&quot; if the job does not exist or is not either reserved by the
+											client, ready, or buried. This could happen if the job timed out before the
+										client sent the delete command.</p>
+									</li>
+								</ul>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>id: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="ignore" class="tsd-anchor"></a>
+					<h3>ignore</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">ignore<span class="tsd-signature-symbol">(</span>tube<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L399">src/client.ts:399</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The &quot;ignore&quot; command is for consumers. It removes the named tube from the
+									watch list for the current connection.</p>
+								</div>
+								<pre><code>ignore &lt;tube&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<p>The reply is one of:</p>
+								<ul>
+									<li><p>&quot;WATCHING <count>\r\n&quot; to indicate success.</p>
+										<ul>
+											<li><count> is the integer number of tubes currently in the watch list.</li>
+										</ul>
+									</li>
+									<li><p>&quot;NOT_IGNORED\r\n&quot; if the client attempts to ignore the only tube in its
+										watch list.</p>
+									</li>
+								</ul>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>tube: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="kick" class="tsd-anchor"></a>
+					<h3>kick</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">kick<span class="tsd-signature-symbol">(</span>bound<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L559">src/client.ts:559</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The kick command applies only to the currently used tube. It moves jobs into
+										the ready queue. If there are any buried jobs, it will only kick buried jobs.
+									Otherwise it will kick delayed jobs. It looks like:</p>
+								</div>
+								<pre><code>kick &lt;bound&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<ul>
+									<li><bound> is an integer upper bound on the number of jobs to kick. The server
+									will kick no more than <bound> jobs.</li>
+								</ul>
+								<p>The response is of the form:</p>
+								<pre><code>KICKED &lt;count&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<ul>
+									<li><count> is an integer indicating the number of jobs actually kicked.</li>
+								</ul>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>bound: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="kickjob" class="tsd-anchor"></a>
+					<h3>kick<wbr>Job</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">kick<wbr>Job<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L587">src/client.ts:587</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The kick-job command is a variant of kick that operates with a single job
+										identified by its job id. If the given job id exists and is in a buried or
+										delayed state, it will be moved to the ready queue of the the same tube where it
+									currently belongs. The syntax is:</p>
+								</div>
+								<pre><code>kick-job &lt;id&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<ul>
+									<li><id> is the job id to kick.</li>
+								</ul>
+								<p>The response is one of:</p>
+								<ul>
+									<li><p>&quot;NOT_FOUND\r\n&quot; if the job does not exist or is not in a kickable state. This
+										can also happen upon internal errors.</p>
+									</li>
+									<li><p>&quot;KICKED\r\n&quot; when the operation succeeded.</p>
+									</li>
+								</ul>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>id: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="listtubeused" class="tsd-anchor"></a>
+					<h3>list<wbr>Tube<wbr>Used</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">list<wbr>Tube<wbr>Used<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L743">src/client.ts:743</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The list-tube-used command returns the tube currently being used by the
+									client. Its form is:</p>
+								</div>
+								<pre><code>list-tube-used<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<p>The response is:</p>
+								<pre><code>USING &lt;tube&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<ul>
+									<li><tube> is the name of the tube being used.</li>
+								</ul>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="listtubes" class="tsd-anchor"></a>
+					<h3>list<wbr>Tubes</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">list<wbr>Tubes<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L696">src/client.ts:696</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The list-tubes command returns a list of all existing tubes. Its form is:</p>
+								</div>
+								<pre><code>list-tubes<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<p>The response is:</p>
+								<pre><code>OK &lt;bytes&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span>
+&lt;data&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<ul>
+									<li><p><bytes> is the size of the following data section in bytes.</p>
+									</li>
+									<li><p><data> is a sequence of bytes of length <bytes> from the previous line. It
+										is a YAML file containing all tube names as a list of strings.</p>
+									</li>
+								</ul>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="listtubeswatched" class="tsd-anchor"></a>
+					<h3>list<wbr>Tubes<wbr>Watched</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">list<wbr>Tubes<wbr>Watched<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L721">src/client.ts:721</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The list-tubes-watched command returns a list tubes currently being watched by
+									the client. Its form is:</p>
+								</div>
+								<pre><code>list-tubes-watched<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<p>The response is:</p>
+								<pre><code>OK &lt;bytes&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span>
+&lt;data&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<ul>
+									<li><p><bytes> is the size of the following data section in bytes.</p>
+									</li>
+									<li><p><data> is a sequence of bytes of length <bytes> from the previous line. It
+										is a YAML file containing watched tube names as a list of strings.</p>
+									</li>
+								</ul>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="pause" class="tsd-anchor"></a>
+					<h3>pause</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">pause<span class="tsd-signature-symbol">(</span>tube<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, delay<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L770">src/client.ts:770</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The pause-tube command can delay any new job being reserved for a given time. Its form is:</p>
+								</div>
+								<pre><code>pause-<span class="hljs-built_in">tube</span> &lt;<span class="hljs-built_in">tube</span>-name&gt; &lt;<span class="hljs-built_in">delay</span>&gt;\r\n</code></pre>
+								<ul>
+									<li><p><tube> is the tube to pause</p>
+									</li>
+									<li><p><delay> is an integer number of seconds &lt; 2**32 to wait before reserving any more
+										jobs from the queue</p>
+									</li>
+								</ul>
+								<p>There are two possible responses:</p>
+								<ul>
+									<li><p>&quot;PAUSED\r\n&quot; to indicate success.</p>
+									</li>
+									<li><p>&quot;NOT_FOUND\r\n&quot; if the tube does not exist.</p>
+									</li>
+								</ul>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>tube: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+								<li>
+									<h5>delay: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="peek" class="tsd-anchor"></a>
+					<h3>peek</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">peek<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L433">src/client.ts:433</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The peek commands let the client inspect a job in the system.</p>
+								</div>
+								<ul>
+									<li>&quot;peek <id>\r\n&quot; - return job <id>.</li>
+								</ul>
+								<p>There are two possible responses, either a single line:</p>
+								<ul>
+									<li>&quot;NOT_FOUND\r\n&quot; if the requested job doesn&#39;t exist or there are no jobs in
+									the requested state.</li>
+								</ul>
+								<p>Or a line followed by a chunk of data, if the command was successful:</p>
+								<pre><code>FOUND &lt;id&gt; &lt;bytes&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span>
+&lt;data&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<ul>
+									<li><p><id> is the job id.</p>
+									</li>
+									<li><p><bytes> is an integer indicating the size of the job body, not including
+										the trailing &quot;\r\n&quot;.</p>
+									</li>
+									<li><p><data> is the job body -- a sequence of bytes of length <bytes> from the
+										previous line.</p>
+									</li>
+								</ul>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>id: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="peekburied" class="tsd-anchor"></a>
+					<h3>peek<wbr>Buried</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">peek<wbr>Buried<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L532">src/client.ts:532</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The peek-buried command let the client inspect a job in the currently used tube.</p>
+								</div>
+								<ul>
+									<li>&quot;peek-buried\r\n&quot; - return the next job in the list of buried jobs.</li>
+								</ul>
+								<p>There are two possible responses, either a single line:</p>
+								<ul>
+									<li>&quot;NOT_FOUND\r\n&quot; if the requested job doesn&#39;t exist or there are no jobs in
+									the requested state.</li>
+								</ul>
+								<p>Or a line followed by a chunk of data, if the command was successful:</p>
+								<pre><code>FOUND &lt;id&gt; &lt;bytes&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span>
+&lt;data&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<ul>
+									<li><p><id> is the job id.</p>
+									</li>
+									<li><p><bytes> is an integer indicating the size of the job body, not including
+										the trailing &quot;\r\n&quot;.</p>
+									</li>
+									<li><p><data> is the job body -- a sequence of bytes of length <bytes> from the
+										previous line.</p>
+									</li>
+								</ul>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="peekdelayed" class="tsd-anchor"></a>
+					<h3>peek<wbr>Delayed</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">peek<wbr>Delayed<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L499">src/client.ts:499</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The peek-delayed command let the client inspect a job in the currently used tube.</p>
+								</div>
+								<ul>
+									<li>&quot;peek-delayed\r\n&quot; - return the delayed job with the shortest delay left.</li>
+								</ul>
+								<p>There are two possible responses, either a single line:</p>
+								<ul>
+									<li>&quot;NOT_FOUND\r\n&quot; if the requested job doesn&#39;t exist or there are no jobs in
+									the requested state.</li>
+								</ul>
+								<p>Or a line followed by a chunk of data, if the command was successful:</p>
+								<pre><code>FOUND &lt;id&gt; &lt;bytes&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span>
+&lt;data&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<ul>
+									<li><p><id> is the job id.</p>
+									</li>
+									<li><p><bytes> is an integer indicating the size of the job body, not including
+										the trailing &quot;\r\n&quot;.</p>
+									</li>
+									<li><p><data> is the job body -- a sequence of bytes of length <bytes> from the
+										previous line.</p>
+									</li>
+								</ul>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="peekready" class="tsd-anchor"></a>
+					<h3>peek<wbr>Ready</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">peek<wbr>Ready<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L466">src/client.ts:466</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The peek-ready command let the client inspect a job in the currently used tube.</p>
+								</div>
+								<ul>
+									<li>&quot;peek-ready\r\n&quot; - return the next ready job.</li>
+								</ul>
+								<p>There are two possible responses, either a single line:</p>
+								<ul>
+									<li>&quot;NOT_FOUND\r\n&quot; if the requested job doesn&#39;t exist or there are no jobs in
+									the requested state.</li>
+								</ul>
+								<p>Or a line followed by a chunk of data, if the command was successful:</p>
+								<pre><code>FOUND &lt;id&gt; &lt;bytes&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span>
+&lt;data&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<ul>
+									<li><p><id> is the job id.</p>
+									</li>
+									<li><p><bytes> is an integer indicating the size of the job body, not including
+										the trailing &quot;\r\n&quot;.</p>
+									</li>
+									<li><p><data> is the job body -- a sequence of bytes of length <bytes> from the
+										previous line.</p>
+									</li>
+								</ul>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="put" class="tsd-anchor"></a>
+					<h3>put</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">put<span class="tsd-signature-symbol">(</span>payload<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span>, opts<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_types_.iputoptions.html" class="tsd-signature-type">IPutOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L149">src/client.ts:149</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The &quot;put&quot; command is for any process that wants to insert a job into the queue.
+									It comprises a command line followed by the job body:</p>
+								</div>
+								<pre><code><span class="hljs-keyword">put</span> <span class="hljs-symbol">&lt;pri&gt;</span> <span class="hljs-symbol">&lt;delay&gt;</span> <span class="hljs-symbol">&lt;ttr&gt;</span> <span class="hljs-symbol">&lt;bytes&gt;</span>\r\n
+<span class="hljs-symbol">&lt;data&gt;</span>\r\n</code></pre>
+								<p>It inserts a job into the client&#39;s currently used tube (see the &quot;use&quot; command
+								below).</p>
+								<ul>
+									<li><p><pri> is an integer &lt; 2**32. Jobs with smaller priority values will be
+												scheduled before jobs with larger priorities. The most urgent priority is 0;
+										the least urgent priority is 4,294,967,295.</p>
+									</li>
+									<li><p><delay> is an integer number of seconds to wait before putting the job in
+												the ready queue. The job will be in the &quot;delayed&quot; state during this time.
+										Maximum delay is 2**32-1.</p>
+									</li>
+									<li><p><ttr> -- time to run -- is an integer number of seconds to allow a worker
+												to run this job. This time is counted from the moment a worker reserves
+												this job. If the worker does not delete, release, or bury the job within
+												<ttr> seconds, the job will time out and the server will release the job.
+													The minimum ttr is 1. If the client sends 0, the server will silently
+										increase the ttr to 1. Maximum ttr is 2**32-1.</p>
+									</li>
+									<li><p><bytes> is an integer indicating the size of the job body, not including the
+										trailing &quot;\r\n&quot;. This value must be less than max-job-size (default: 2**16).</p>
+									</li>
+									<li><p><data> is the job body -- a sequence of bytes of length <bytes> from the
+										previous line.</p>
+									</li>
+								</ul>
+								<p>After sending the command line and body, the client waits for a reply, which
+								may be:</p>
+								<ul>
+									<li><p>&quot;INSERTED <id>\r\n&quot; to indicate success.</p>
+										<ul>
+											<li><id> is the integer id of the new job</li>
+										</ul>
+									</li>
+									<li><p>&quot;BURIED <id>\r\n&quot; if the server ran out of memory trying to grow the
+										priority queue data structure.</p>
+										<ul>
+											<li><id> is the integer id of the new job</li>
+										</ul>
+									</li>
+									<li><p>&quot;EXPECTED_CRLF\r\n&quot; The job body must be followed by a CR-LF pair, that is,
+											&quot;\r\n&quot;. These two bytes are not counted in the job size given by the client
+										in the put command line.</p>
+									</li>
+									<li><p>&quot;JOB_TOO_BIG\r\n&quot; The client has requested to put a job with a body larger
+										than max-job-size bytes.</p>
+									</li>
+									<li><p>&quot;DRAINING\r\n&quot; This means that the server has been put into &quot;drain mode&quot; and
+											is no longer accepting new jobs. The client should try another server or
+											disconnect and try again later. To put the server in drain mode, send the
+										SIGUSR1 signal to the process.</p>
+									</li>
+								</ul>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>payload: <span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> opts: <a href="../interfaces/_types_.iputoptions.html" class="tsd-signature-type">IPutOptions</a><span class="tsd-signature-symbol"> = PUT_DEFAULT</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>if undefined; defaults to <code>{ priority: 0, delay: 0, ttr: 60 }</code></p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="quit" class="tsd-anchor"></a>
+					<h3>quit</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">quit<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L79">src/client.ts:79</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The quit command simply closes the connection. Its form is:</p>
+								</div>
+								<pre><code>quit<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="release" class="tsd-anchor"></a>
+					<h3>release</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">release<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, opts<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_types_.ireleaseoptions.html" class="tsd-signature-type">IReleaseOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L345">src/client.ts:345</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The release command puts a reserved job back into the ready queue (and marks
+										its state as &quot;ready&quot;) to be run by any client. It is normally used when the job
+									fails because of a transitory error. It looks like this:</p>
+								</div>
+								<pre><code>release <span class="hljs-tag">&lt;<span class="hljs-name">id</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">pri</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">delay</span>&gt;</span>\r\n</code></pre>
+								<ul>
+									<li><p><id> is the job id to release.</p>
+									</li>
+									<li><p><pri> is a new priority to assign to the job.</p>
+									</li>
+									<li><p><delay> is an integer number of seconds to wait before putting the job in
+										the ready queue. The job will be in the &quot;delayed&quot; state during this time.</p>
+									</li>
+								</ul>
+								<p>The client expects one line of response, which may be:</p>
+								<ul>
+									<li><p>&quot;RELEASED\r\n&quot; to indicate success.</p>
+									</li>
+									<li><p>&quot;BURIED\r\n&quot; if the server ran out of memory trying to grow the priority
+										queue data structure.</p>
+									</li>
+									<li><p>&quot;NOT_FOUND\r\n&quot; if the job does not exist or is not reserved by the client.</p>
+									</li>
+								</ul>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>id: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> opts: <a href="../interfaces/_types_.ireleaseoptions.html" class="tsd-signature-type">IReleaseOptions</a><span class="tsd-signature-symbol"> = REL_DEFAULT</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>if undefined; defaults to <code>{ priority: 0, delay: 0 }</code></p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="reserve" class="tsd-anchor"></a>
+					<h3>reserve</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">reserve<span class="tsd-signature-symbol">(</span>timeout<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L279">src/client.ts:279</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>A process that wants to consume jobs from the queue uses &quot;reserve&quot;, &quot;delete&quot;,
+									&quot;release&quot;, and &quot;bury&quot;. The first worker command, &quot;reserve&quot;, looks like this:</p>
+								</div>
+								<pre><code>reserve<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<p>Alternatively, you can specify a timeout as follows:</p>
+								<pre><code>reserve-<span class="hljs-keyword">with</span>-<span class="hljs-keyword">timeout</span> &lt;<span class="hljs-keyword">seconds</span>&gt;\r\n</code></pre>
+								<p>This will return a newly-reserved job. If no job is available to be reserved,
+									beanstalkd will wait to send a response until one becomes available. Once a
+									job is reserved for the client, the client has limited time to run (TTR) the
+									job before the job times out. When the job times out, the server will put the
+									job back into the ready queue. Both the TTR and the actual time left can be
+								found in response to the stats-job command.</p>
+								<p>If more than one job is ready, beanstalkd will choose the one with the
+									smallest priority value. Within each priority, it will choose the one that
+								was received first.</p>
+								<p>A timeout value of 0 will cause the server to immediately return either a
+									response or TIMED_OUT.  A positive value of timeout will limit the amount of
+									time the client will block on the reserve request until a job becomes
+								available.</p>
+								<p>During the TTR of a reserved job, the last second is kept by the server as a
+									safety margin, during which the client will not be made to wait for another
+									job. If the client issues a reserve command during the safety margin, or if
+									the safety margin arrives while the client is waiting on a reserve command,
+								the server will respond with:</p>
+								<pre><code>DEADLINE_SOON<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<p>This gives the client a chance to delete or release its reserved job before
+								the server automatically releases it.</p>
+								<pre><code>TIMED_OUT<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<p>If a non-negative timeout was specified and the timeout exceeded before a job
+									became available, or if the client&#39;s connection is half-closed, the server
+								will respond with TIMED_OUT.</p>
+								<p>Otherwise, the only other response to this command is a successful reservation
+								in the form of a text line followed by the job body:</p>
+								<pre><code>RESERVED &lt;id&gt; &lt;bytes&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span>
+&lt;data&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<ul>
+									<li><p><id> is the job id -- an integer unique to this job in this instance of
+										beanstalkd.</p>
+									</li>
+									<li><p><bytes> is an integer indicating the size of the job body, not including
+										the trailing &quot;\r\n&quot;.</p>
+									</li>
+									<li><p><data> is the job body -- a sequence of bytes of length <bytes> from the
+													previous line. This is a verbatim copy of the bytes that were originally
+										sent to the server in the put command for this job.</p>
+									</li>
+								</ul>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> timeout: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p><code>res</code> with <code>res[0]</code> being the <code>id</code> and <code>res[1]</code> being the <code>payload</code></p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="stats" class="tsd-anchor"></a>
+					<h3>stats</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">stats<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L672">src/client.ts:672</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The stats command gives statistical information about the system as a whole.
+									Its form is:</p>
+								</div>
+								<pre><code>stats<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<p>The server will respond:</p>
+								<pre><code>OK &lt;bytes&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span>
+&lt;data&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<ul>
+									<li><p><bytes> is the size of the following data section in bytes.</p>
+									</li>
+									<li><p><data> is a sequence of bytes of length <bytes> from the previous line. It
+										is a YAML file with statistical information represented by a dictionary.</p>
+									</li>
+								</ul>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="statsjob" class="tsd-anchor"></a>
+					<h3>stats<wbr>Job</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">stats<wbr>Job<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L647">src/client.ts:647</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The stats-job command gives statistical information about the specified job if
+									it exists. Its form is:</p>
+								</div>
+								<pre><code>stats-job &lt;id&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<ul>
+									<li><id> is a job id.</li>
+								</ul>
+								<p>The response is one of:</p>
+								<ul>
+									<li><p>&quot;NOT_FOUND\r\n&quot; if the job does not exist.</p>
+									</li>
+									<li><p>&quot;OK <bytes>\r\n<data>\r\n&quot;</p>
+										<ul>
+											<li><p><bytes> is the size of the following data section in bytes.</p>
+											</li>
+											<li><p><data> is a sequence of bytes of length <bytes> from the previous line. It
+												is a YAML file with statistical information represented by a dictionary.</p>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>id: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="statstube" class="tsd-anchor"></a>
+					<h3>stats<wbr>Tube</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">stats<wbr>Tube<span class="tsd-signature-symbol">(</span>tube<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L617">src/client.ts:617</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The stats-tube command gives statistical information about the specified tube
+									if it exists. Its form is:</p>
+								</div>
+								<pre><code>stats-tube &lt;tube&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<ul>
+									<li><tube> is a name at most 200 bytes. Stats will be returned for this tube.</li>
+								</ul>
+								<p>The response is one of:</p>
+								<ul>
+									<li><p>&quot;NOT_FOUND\r\n&quot; if the tube does not exist.</p>
+									</li>
+									<li><p>&quot;OK <bytes>\r\n<data>\r\n&quot;</p>
+										<ul>
+											<li><p><bytes> is the size of the following data section in bytes.</p>
+											</li>
+											<li><p><data> is a sequence of bytes of length <bytes> from the previous line. It
+												is a YAML file with statistical information represented by a dictionary.</p>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>tube: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="touch" class="tsd-anchor"></a>
+					<h3>touch</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">touch<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L801">src/client.ts:801</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The &quot;touch&quot; command allows a worker to request more time to work on a job.
+										This is useful for jobs that potentially take a long time, but you still want
+										the benefits of a TTR pulling a job away from an unresponsive worker.  A worker
+										may periodically tell the server that it&#39;s still alive and processing a job
+										(e.g. it may do this on DEADLINE_SOON). The command postpones the auto
+									release of a reserved job until TTR seconds from when the command is issued.</p>
+								</div>
+								<p>The touch command looks like this:</p>
+								<pre><code>touch &lt;id&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<ul>
+									<li><id> is the ID of a job reserved by the current connection.</li>
+								</ul>
+								<p>There are two possible responses:</p>
+								<ul>
+									<li><p>&quot;TOUCHED\r\n&quot; to indicate success.</p>
+									</li>
+									<li><p>&quot;NOT_FOUND\r\n&quot; if the job does not exist or is not reserved by the client.</p>
+									</li>
+								</ul>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>id: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="use" class="tsd-anchor"></a>
+					<h3>use</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">use<span class="tsd-signature-symbol">(</span>tube<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L179">src/client.ts:179</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The &quot;use&quot; command is for producers. Subsequent put commands will put jobs into
+										the tube specified by this command. If no use command has been issued, jobs
+									will be put into the tube named &quot;default&quot;.</p>
+								</div>
+								<pre><code>use &lt;tube&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<ul>
+									<li><tube> is a name at most 200 bytes. It specifies the tube to use. If the
+									tube does not exist, it will be created.</li>
+								</ul>
+								<p>The only reply is:</p>
+								<pre><code>USING &lt;tube&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<ul>
+									<li><tube> is the name of the tube now being used.</li>
+								</ul>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>tube: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="watch" class="tsd-anchor"></a>
+					<h3>watch</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">watch<span class="tsd-signature-symbol">(</span>tube<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/8bdc8f8/src/client.ts#L373">src/client.ts:373</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The &quot;watch&quot; command adds the named tube to the watch list for the current
+										connection. A reserve command will take a job from any of the tubes in the
+										watch list. For each new connection, the watch list initially consists of one
+									tube, named &quot;default&quot;.</p>
+								</div>
+								<pre><code>watch &lt;tube&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<ul>
+									<li><tube> is a name at most 200 bytes. It specifies a tube to add to the watch
+									list. If the tube doesn&#39;t exist, it will be created.</li>
+								</ul>
+								<p>The reply is:</p>
+								<pre><code>WATCHING &lt;count&gt;<span class="hljs-tag">\<span class="hljs-name">r</span></span><span class="hljs-tag">\<span class="hljs-name">n</span></span></code></pre>
+								<ul>
+									<li><count> is the integer number of tubes currently in the watch list.</li>
+								</ul>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>tube: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="../modules/_client_.html">&quot;client&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_error_.html">&quot;error&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_index_.html">&quot;index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_internal_types_.html">&quot;internal_<wbr>types&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_parse_utils_.html">&quot;parse-<wbr>utils&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_protocol_.html">&quot;protocol&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_types_.html">&quot;types&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_yaml_parser_.html">&quot;yaml-<wbr>parser&quot;</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-module">
+						<a href="_client_.beanstalkclient.html" class="tsd-kind-icon">Beanstalk<wbr>Client</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_client_.beanstalkclient.html#_pendingrequests" class="tsd-kind-icon">_pending<wbr>Requests</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_client_.beanstalkclient.html#_socket" class="tsd-kind-icon">_socket</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-private">
+								<a href="_client_.beanstalkclient.html#_send" class="tsd-kind-icon">_send</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#bury" class="tsd-kind-icon">bury</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#connect" class="tsd-kind-icon">connect</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#delete" class="tsd-kind-icon">delete</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#ignore" class="tsd-kind-icon">ignore</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#kick" class="tsd-kind-icon">kick</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#kickjob" class="tsd-kind-icon">kick<wbr>Job</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#listtubeused" class="tsd-kind-icon">list<wbr>Tube<wbr>Used</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#listtubes" class="tsd-kind-icon">list<wbr>Tubes</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#listtubeswatched" class="tsd-kind-icon">list<wbr>Tubes<wbr>Watched</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#pause" class="tsd-kind-icon">pause</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#peek" class="tsd-kind-icon">peek</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#peekburied" class="tsd-kind-icon">peek<wbr>Buried</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#peekdelayed" class="tsd-kind-icon">peek<wbr>Delayed</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#peekready" class="tsd-kind-icon">peek<wbr>Ready</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#put" class="tsd-kind-icon">put</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#quit" class="tsd-kind-icon">quit</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#release" class="tsd-kind-icon">release</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#reserve" class="tsd-kind-icon">reserve</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#stats" class="tsd-kind-icon">stats</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#statsjob" class="tsd-kind-icon">stats<wbr>Job</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#statstube" class="tsd-kind-icon">stats<wbr>Tube</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#touch" class="tsd-kind-icon">touch</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#use" class="tsd-kind-icon">use</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_client_.beanstalkclient.html#watch" class="tsd-kind-icon">watch</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_client_.html#put_default" class="tsd-kind-icon">PUT_<wbr>DEFAULT</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_client_.html#rel_default" class="tsd-kind-icon">REL_<wbr>DEFAULT</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
