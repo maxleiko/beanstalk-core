@@ -15,8 +15,11 @@ jobs:
       uses: actions/setup-node@master
       with:
         node-version: 10.x
+    - run: sudo docker run --name beanstalkd -d -p "127.0.0.1:11300:11300" schickling/beanstalkd:latest -b /tmp -f0 -z 104857600 -s 104857600
     - run: yarn
     - run: yarn test
+      env:
+        PORT: 11300
 
     - name: Publish if version has been updated
       uses: pascalgn/npm-publish-action@06e0830ea83eea10ed4a62654eeaedafb8bf50fc
