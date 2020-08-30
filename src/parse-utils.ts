@@ -1,16 +1,9 @@
 import { ParseContext, R } from './internal_types';
 import { Scalar } from './types';
 
-export function integer(
-  ctx: ParseContext,
-  res: Partial<R<number>>
-): res is R<number> {
+export function integer(ctx: ParseContext, res: Partial<R<number>>): res is R<number> {
   const startOffset = ctx.offset;
-  while (
-    ctx.offset < ctx.buf.length &&
-    ctx.buf[ctx.offset] >= 48 &&
-    ctx.buf[ctx.offset] <= 57
-  ) {
+  while (ctx.offset < ctx.buf.length && ctx.buf[ctx.offset] >= 48 && ctx.buf[ctx.offset] <= 57) {
     // 0-9
     ctx.offset++;
   }
@@ -28,10 +21,7 @@ export function dot(ctx: ParseContext): boolean {
   return false;
 }
 
-export function float(
-  ctx: ParseContext,
-  res: Partial<R<number>>
-): res is R<number> {
+export function float(ctx: ParseContext, res: Partial<R<number>>): res is R<number> {
   const start = ctx.offset;
   const head: Partial<R<number>> = {};
   if (integer(ctx, head)) {
@@ -57,11 +47,7 @@ export function number(ctx: ParseContext, res: Partial<R<number>>): res is R<num
   return false;
 }
 
-export function string(
-  ctx: ParseContext,
-  endCode: number,
-  res: Partial<R<string>>,
-): res is R<string> {
+export function string(ctx: ParseContext, endCode: number, res: Partial<R<string>>): res is R<string> {
   if (ctx.offset === ctx.buf.length) {
     return false;
   }
@@ -119,7 +105,7 @@ export function boolean(ctx: ParseContext, res: Partial<R<boolean>>): res is R<b
   if (char(ctx, 116)) {
     if (char(ctx, 114)) {
       if (char(ctx, 117)) {
-        if (char (ctx, 101)) {
+        if (char(ctx, 101)) {
           res.value = true;
           return true;
         }
@@ -131,7 +117,7 @@ export function boolean(ctx: ParseContext, res: Partial<R<boolean>>): res is R<b
   if (char(ctx, 102)) {
     if (char(ctx, 97)) {
       if (char(ctx, 108)) {
-        if (char (ctx, 115)) {
+        if (char(ctx, 115)) {
           if (char(ctx, 101)) {
             res.value = false;
             return true;
@@ -144,11 +130,7 @@ export function boolean(ctx: ParseContext, res: Partial<R<boolean>>): res is R<b
   return false;
 }
 
-export function scalar(
-  ctx: ParseContext,
-  endCode: number,
-  res: Partial<R<Scalar>>
-): res is R<Scalar> {
+export function scalar(ctx: ParseContext, endCode: number, res: Partial<R<Scalar>>): res is R<Scalar> {
   const start = ctx.offset;
   const b: Partial<R<boolean>> = {};
   if (boolean(ctx, b)) {

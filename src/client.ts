@@ -34,15 +34,16 @@ export class BeanstalkClient {
     this._pendingRequests = [];
 
     this._socket.on('data', (chunk) => {
-      const pending = this._pendingRequests.pop();
-      if (pending) {
+      // FIXME are we sure that we cannot receive messages whithout sending one first?
+      const emitter = this._pendingRequests.pop();
+      if (emitter) {
         try {
           const messages = parse(chunk);
           for (const msg of messages) {
-            pending.emit('resolve', msg);
+            emitter.emit('resolve', msg);
           }
         } catch (err) {
-          pending.emit('reject', err);
+          emitter.emit('reject', err);
         }
       }
     });
@@ -134,14 +135,9 @@ export class BeanstalkClient {
    * @param payload
    * @param opts if undefined; defaults to `{ priority: 0, delay: 0, ttr: 60 }`
    */
-  async put(
-    payload: Buffer | string,
-    opts: IPutOptions = PUT_DEFAULT
-  ): Promise<number> {
+  async put(payload: Buffer | string, opts: IPutOptions = PUT_DEFAULT): Promise<number> {
     payload = typeof payload === 'string' ? Buffer.from(payload) : payload;
-    const head = Buffer.from(
-      `put ${opts.priority} ${opts.delay} ${opts.ttr} ${payload.byteLength}\r\n`
-    );
+    const head = Buffer.from(`put ${opts.priority} ${opts.delay} ${opts.ttr} ${payload.byteLength}\r\n`);
     const tail = Buffer.from('\r\n');
     const cmd = Buffer.concat([head, payload, tail]);
     const res = await this._send<Inserted>(cmd);
@@ -210,63 +206,63 @@ export class BeanstalkClient {
   /**
    * A process that wants to consume jobs from the queue uses "reserve", "delete",
    * "release", and "bury". The first worker command, "reserve", looks like this:
-   * 
+   *
    *     reserve\r\n
-   * 
+   *
    * Alternatively, you can specify a timeout as follows:
-   * 
+   *
    *     reserve-with-timeout <seconds>\r\n
-   * 
+   *
    * This will return a newly-reserved job. If no job is available to be reserved,
    * beanstalkd will wait to send a response until one becomes available. Once a
    * job is reserved for the client, the client has limited time to run (TTR) the
    * job before the job times out. When the job times out, the server will put the
    * job back into the ready queue. Both the TTR and the actual time left can be
    * found in response to the stats-job command.
-   * 
+   *
    * If more than one job is ready, beanstalkd will choose the one with the
    * smallest priority value. Within each priority, it will choose the one that
    * was received first.
-   * 
+   *
    * A timeout value of 0 will cause the server to immediately return either a
    * response or TIMED_OUT.  A positive value of timeout will limit the amount of
    * time the client will block on the reserve request until a job becomes
    * available.
-   * 
+   *
    * During the TTR of a reserved job, the last second is kept by the server as a
    * safety margin, during which the client will not be made to wait for another
    * job. If the client issues a reserve command during the safety margin, or if
    * the safety margin arrives while the client is waiting on a reserve command,
    * the server will respond with:
-   * 
+   *
    *     DEADLINE_SOON\r\n
-   * 
+   *
    * This gives the client a chance to delete or release its reserved job before
    * the server automatically releases it.
-   * 
+   *
    *     TIMED_OUT\r\n
-   * 
+   *
    * If a non-negative timeout was specified and the timeout exceeded before a job
    * became available, or if the client's connection is half-closed, the server
    * will respond with TIMED_OUT.
-   * 
+   *
    * Otherwise, the only other response to this command is a successful reservation
    * in the form of a text line followed by the job body:
-   * 
+   *
    *     RESERVED <id> <bytes>\r\n
    *     <data>\r\n
-   * 
+   *
    *  - <id> is the job id -- an integer unique to this job in this instance of
    *    beanstalkd.
-   * 
+   *
    *  - <bytes> is an integer indicating the size of the job body, not including
    *    the trailing "\r\n".
-   * 
+   *
    *  - <data> is the job body -- a sequence of bytes of length <bytes> from the
    *    previous line. This is a verbatim copy of the bytes that were originally
    *    sent to the server in the put command for this job.
-   * 
-   * @param timeout 
+   *
+   * @param timeout
    * @returns {[number, Buffer]} `res` with `res[0]` being the `id` and `res[1]` being the `payload`
    */
   async reserve(timeout?: number): Promise<[number, Buffer]> {
@@ -285,20 +281,20 @@ export class BeanstalkClient {
    * the client has limited time to run (TTR) the job before the job times out.
    * When the job times out, the server will put the job back into the ready queue.
    * The command looks like this:
-   * 
+   *
    *     reserve-job <id>\r\n
-   * 
+   *
    *  - <id> is the job id to reserve
-   * 
+   *
    * This should immediately return one of these responses:
-   * 
+   *
    * - `NOT_FOUND\r\n` if the job does not exist or reserved by a client or
    *   is not either ready, buried or delayed.
-   * 
+   *
    * - `RESERVED <id> <bytes>\r\n<data>\r\n`. See the description for
    *   the reserve command.
-   * 
-   * @param id 
+   *
+   * @param id
    */
   // async reserveJob(id: number): Promise<[number, Buffer]> {
   //   const cmd = Buffer.from(`reserve-job ${id}\r\n`);
@@ -349,19 +345,19 @@ export class BeanstalkClient {
    * connection. A reserve command will take a job from any of the tubes in the
    * watch list. For each new connection, the watch list initially consists of one
    * tube, named "default".
-   * 
+   *
    *     watch <tube>\r\n
-   * 
+   *
    *  - <tube> is a name at most 200 bytes. It specifies a tube to add to the watch
    *    list. If the tube doesn't exist, it will be created.
-   * 
+   *
    * The reply is:
-   * 
+   *
    *     WATCHING <count>\r\n
-   * 
+   *
    *  - <count> is the integer number of tubes currently in the watch list.
-   * 
-   * @param tube 
+   *
+   * @param tube
    */
   async watch(tube: string): Promise<number> {
     const cmd = Buffer.from(`watch ${tube}\r\n`);
@@ -375,19 +371,19 @@ export class BeanstalkClient {
   /**
    * The "ignore" command is for consumers. It removes the named tube from the
    * watch list for the current connection.
-   * 
+   *
    *     ignore <tube>\r\n
-   * 
+   *
    * The reply is one of:
-   * 
+   *
    *  - "WATCHING <count>\r\n" to indicate success.
-   * 
+   *
    *    - <count> is the integer number of tubes currently in the watch list.
-   * 
+   *
    *  - "NOT_IGNORED\r\n" if the client attempts to ignore the only tube in its
    *    watch list.
-   * 
-   * @param tube 
+   *
+   * @param tube
    */
   async ignore(tube: string): Promise<number> {
     const cmd = Buffer.from(`ignore ${tube}\r\n`);
@@ -400,27 +396,27 @@ export class BeanstalkClient {
 
   /**
    * The peek commands let the client inspect a job in the system.
-   * 
+   *
    *  - "peek <id>\r\n" - return job <id>.
-   * 
+   *
    * There are two possible responses, either a single line:
-   * 
+   *
    *  - "NOT_FOUND\r\n" if the requested job doesn't exist or there are no jobs in
    *    the requested state.
-   * 
+   *
    * Or a line followed by a chunk of data, if the command was successful:
-   * 
+   *
    *     FOUND <id> <bytes>\r\n
    *     <data>\r\n
-   * 
+   *
    *  - <id> is the job id.
-   * 
+   *
    *  - <bytes> is an integer indicating the size of the job body, not including
    *    the trailing "\r\n".
-   * 
+   *
    *  - <data> is the job body -- a sequence of bytes of length <bytes> from the
    *    previous line.
-   * 
+   *
    * @param id
    */
   async peek(id: number): Promise<[number, Buffer]> {
@@ -434,27 +430,27 @@ export class BeanstalkClient {
 
   /**
    * The peek-ready command let the client inspect a job in the currently used tube.
-   * 
+   *
    *  - "peek-ready\r\n" - return the next ready job.
-   * 
+   *
    * There are two possible responses, either a single line:
-   * 
+   *
    *  - "NOT_FOUND\r\n" if the requested job doesn't exist or there are no jobs in
    *    the requested state.
-   * 
+   *
    * Or a line followed by a chunk of data, if the command was successful:
-   * 
+   *
    *     FOUND <id> <bytes>\r\n
    *     <data>\r\n
-   * 
+   *
    *  - <id> is the job id.
-   * 
+   *
    *  - <bytes> is an integer indicating the size of the job body, not including
    *    the trailing "\r\n".
-   * 
+   *
    *  - <data> is the job body -- a sequence of bytes of length <bytes> from the
    *    previous line.
-   * 
+   *
    */
   async peekReady(): Promise<[number, Buffer]> {
     const cmd = Buffer.from(`peek-ready\r\n`);
@@ -467,27 +463,27 @@ export class BeanstalkClient {
 
   /**
    * The peek-delayed command let the client inspect a job in the currently used tube.
-   * 
+   *
    *  - "peek-delayed\r\n" - return the delayed job with the shortest delay left.
-   * 
+   *
    * There are two possible responses, either a single line:
-   * 
+   *
    *  - "NOT_FOUND\r\n" if the requested job doesn't exist or there are no jobs in
    *    the requested state.
-   * 
+   *
    * Or a line followed by a chunk of data, if the command was successful:
-   * 
+   *
    *     FOUND <id> <bytes>\r\n
    *     <data>\r\n
-   * 
+   *
    *  - <id> is the job id.
-   * 
+   *
    *  - <bytes> is an integer indicating the size of the job body, not including
    *    the trailing "\r\n".
-   * 
+   *
    *  - <data> is the job body -- a sequence of bytes of length <bytes> from the
    *    previous line.
-   * 
+   *
    */
   async peekDelayed(): Promise<[number, Buffer]> {
     const cmd = Buffer.from(`peek-delayed\r\n`);
@@ -500,27 +496,27 @@ export class BeanstalkClient {
 
   /**
    * The peek-buried command let the client inspect a job in the currently used tube.
-   * 
+   *
    *  - "peek-buried\r\n" - return the next job in the list of buried jobs.
-   * 
+   *
    * There are two possible responses, either a single line:
-   * 
+   *
    *  - "NOT_FOUND\r\n" if the requested job doesn't exist or there are no jobs in
    *    the requested state.
-   * 
+   *
    * Or a line followed by a chunk of data, if the command was successful:
-   * 
+   *
    *     FOUND <id> <bytes>\r\n
    *     <data>\r\n
-   * 
+   *
    *  - <id> is the job id.
-   * 
+   *
    *  - <bytes> is an integer indicating the size of the job body, not including
    *    the trailing "\r\n".
-   * 
+   *
    *  - <data> is the job body -- a sequence of bytes of length <bytes> from the
    *    previous line.
-   * 
+   *
    */
   async peekBuried(): Promise<[number, Buffer]> {
     const cmd = Buffer.from(`peek-buried\r\n`);
@@ -535,19 +531,19 @@ export class BeanstalkClient {
    * The kick command applies only to the currently used tube. It moves jobs into
    * the ready queue. If there are any buried jobs, it will only kick buried jobs.
    * Otherwise it will kick delayed jobs. It looks like:
-   * 
+   *
    *     kick <bound>\r\n
-   * 
+   *
    *  - <bound> is an integer upper bound on the number of jobs to kick. The server
    *    will kick no more than <bound> jobs.
-   * 
+   *
    * The response is of the form:
-   * 
+   *
    *     KICKED <count>\r\n
-   * 
+   *
    *  - <count> is an integer indicating the number of jobs actually kicked.
-   * 
-   * @param bound 
+   *
+   * @param bound
    */
   async kick(bound: number): Promise<number> {
     const cmd = Buffer.from(`kick ${bound}\r\n`);
@@ -563,18 +559,18 @@ export class BeanstalkClient {
    * identified by its job id. If the given job id exists and is in a buried or
    * delayed state, it will be moved to the ready queue of the the same tube where it
    * currently belongs. The syntax is:
-   * 
+   *
    *     kick-job <id>\r\n
-   * 
+   *
    *  - <id> is the job id to kick.
-   * 
+   *
    * The response is one of:
-   * 
+   *
    *  - "NOT_FOUND\r\n" if the job does not exist or is not in a kickable state. This
    *    can also happen upon internal errors.
-   * 
+   *
    *  - "KICKED\r\n" when the operation succeeded.
-   * 
+   *
    * @param id
    */
   async kickJob(id: number): Promise<void> {
@@ -589,23 +585,23 @@ export class BeanstalkClient {
   /**
    * The stats-tube command gives statistical information about the specified tube
    * if it exists. Its form is:
-   * 
+   *
    *     stats-tube <tube>\r\n
-   * 
+   *
    *  - <tube> is a name at most 200 bytes. Stats will be returned for this tube.
-   * 
+   *
    * The response is one of:
-   * 
+   *
    *  - "NOT_FOUND\r\n" if the tube does not exist.
-   * 
+   *
    *  - "OK <bytes>\r\n<data>\r\n"
-   * 
+   *
    *    - <bytes> is the size of the following data section in bytes.
-   * 
+   *
    *    - <data> is a sequence of bytes of length <bytes> from the previous line. It
    *      is a YAML file with statistical information represented by a dictionary.
-   * 
-   * @param tube 
+   *
+   * @param tube
    */
   async statsTube(tube: string): Promise<Record<string, string | number | boolean>> {
     const cmd = Buffer.from(`stats-tube ${tube}\r\n`);
@@ -619,23 +615,23 @@ export class BeanstalkClient {
   /**
    * The stats-job command gives statistical information about the specified job if
    * it exists. Its form is:
-   * 
+   *
    *     stats-job <id>\r\n
-   * 
+   *
    *  - <id> is a job id.
-   * 
+   *
    * The response is one of:
-   * 
+   *
    *  - "NOT_FOUND\r\n" if the job does not exist.
-   * 
+   *
    *  - "OK <bytes>\r\n<data>\r\n"
-   * 
+   *
    *    - <bytes> is the size of the following data section in bytes.
-   * 
+   *
    *    - <data> is a sequence of bytes of length <bytes> from the previous line. It
    *      is a YAML file with statistical information represented by a dictionary.
-   * 
-   * @param id 
+   *
+   * @param id
    */
   async statsJob(id: number): Promise<Record<string, string | number | boolean>> {
     const cmd = Buffer.from(`stats-job ${id}\r\n`);
@@ -649,16 +645,16 @@ export class BeanstalkClient {
   /**
    * The stats command gives statistical information about the system as a whole.
    * Its form is:
-   * 
+   *
    *     stats\r\n
-   * 
+   *
    * The server will respond:
-   * 
+   *
    *     OK <bytes>\r\n
    *     <data>\r\n
-   * 
+   *
    *  - <bytes> is the size of the following data section in bytes.
-   * 
+   *
    *  - <data> is a sequence of bytes of length <bytes> from the previous line. It
    *    is a YAML file with statistical information represented by a dictionary.
    */
@@ -673,16 +669,16 @@ export class BeanstalkClient {
 
   /**
    * The list-tubes command returns a list of all existing tubes. Its form is:
-   * 
+   *
    *     list-tubes\r\n
-   * 
+   *
    * The response is:
-   * 
+   *
    *     OK <bytes>\r\n
    *     <data>\r\n
-   * 
+   *
    *  - <bytes> is the size of the following data section in bytes.
-   * 
+   *
    *  - <data> is a sequence of bytes of length <bytes> from the previous line. It
    *    is a YAML file containing all tube names as a list of strings.
    */
@@ -723,15 +719,15 @@ export class BeanstalkClient {
   /**
    * The list-tube-used command returns the tube currently being used by the
    * client. Its form is:
-   * 
+   *
    *     list-tube-used\r\n
-   * 
+   *
    * The response is:
-   * 
+   *
    *     USING <tube>\r\n
-   * 
+   *
    *  - <tube> is the name of the tube being used.
-   * 
+   *
    */
   async listTubeUsed(): Promise<string> {
     const cmd = Buffer.from('list-tube-used\r\n');
@@ -744,21 +740,21 @@ export class BeanstalkClient {
 
   /**
    * The pause-tube command can delay any new job being reserved for a given time. Its form is:
-   * 
+   *
    *     pause-tube <tube-name> <delay>\r\n
-   * 
+   *
    *  - <tube> is the tube to pause
-   * 
+   *
    *  - <delay> is an integer number of seconds < 2**32 to wait before reserving any more
    *    jobs from the queue
-   * 
+   *
    * There are two possible responses:
-   * 
+   *
    *  - "PAUSED\r\n" to indicate success.
-   * 
+   *
    *  - "NOT_FOUND\r\n" if the tube does not exist.
-   * 
-   * @param tube 
+   *
+   * @param tube
    */
   async pause(tube: string, delay: number): Promise<void> {
     const cmd = Buffer.from(`pause-tube ${tube} ${delay}\r\n`);
@@ -776,20 +772,20 @@ export class BeanstalkClient {
    * may periodically tell the server that it's still alive and processing a job
    * (e.g. it may do this on DEADLINE_SOON). The command postpones the auto
    * release of a reserved job until TTR seconds from when the command is issued.
-   * 
+   *
    * The touch command looks like this:
-   * 
+   *
    *     touch <id>\r\n
-   * 
+   *
    *  - <id> is the ID of a job reserved by the current connection.
-   * 
+   *
    * There are two possible responses:
-   * 
+   *
    *  - "TOUCHED\r\n" to indicate success.
-   * 
+   *
    *  - "NOT_FOUND\r\n" if the job does not exist or is not reserved by the client.
-   * 
-   * @param id 
+   *
+   * @param id
    */
   async touch(id: number): Promise<void> {
     const cmd = Buffer.from(`touch ${id}\r\n`);
@@ -804,23 +800,23 @@ export class BeanstalkClient {
    * The bury command puts a job into the "buried" state. Buried jobs are put into a
    * FIFO linked list and will not be touched by the server again until a client
    * kicks them with the "kick" command.
-   * 
+   *
    * The bury command looks like this:
-   * 
+   *
    *     bury <id> <pri>\r\n
-   * 
+   *
    *  - <id> is the job id to bury.
-   * 
+   *
    *  - <pri> is a new priority to assign to the job.
-   * 
+   *
    * There are two possible responses:
-   * 
+   *
    *  - "BURIED\r\n" to indicate success.
-   * 
+   *
    *  - "NOT_FOUND\r\n" if the job does not exist or is not reserved by the client.
-   * 
-   * @param id 
-   * @param priority 
+   *
+   * @param id
+   * @param priority
    */
   async bury(id: number, priority = 1024): Promise<void> {
     const cmd = Buffer.from(`bury ${id} ${priority}\r\n`);

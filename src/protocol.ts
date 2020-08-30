@@ -1,14 +1,5 @@
 import { ParseContext, R } from './internal_types';
-import {
-  Msg,
-  Inserted,
-  Using,
-  Reserved,
-  Ok,
-  Watching,
-  Found,
-  Kicked,
-} from './types';
+import { Msg, Inserted, Using, Reserved, Ok, Watching, Found, Kicked } from './types';
 import { space, integer, crlf, string } from './parse-utils';
 
 export class BeanstalkParseError extends Error {
@@ -118,10 +109,7 @@ export function parse(buf: Buffer): Msg[] {
   return results;
 }
 
-function found(
-  ctx: ParseContext,
-  res: Partial<R<[number, Buffer]>>
-): res is R<[number, Buffer]> {
+function found(ctx: ParseContext, res: Partial<R<[number, Buffer]>>): res is R<[number, Buffer]> {
   const start = ctx.offset;
   if (token(ctx, S.FOUND)) {
     if (space(ctx)) {
@@ -131,10 +119,7 @@ function found(
           const len: Partial<R<number>> = {};
           if (integer(ctx, len)) {
             if (crlf(ctx)) {
-              res.value = [
-                id.value,
-                ctx.buf.slice(ctx.offset, ctx.offset + len.value),
-              ];
+              res.value = [id.value, ctx.buf.slice(ctx.offset, ctx.offset + len.value)];
               ctx.offset += len.value; // skip bytes len
               if (crlf(ctx)) {
                 return true;
@@ -149,10 +134,7 @@ function found(
   return false;
 }
 
-function kicked(
-  ctx: ParseContext,
-  res: Partial<R<number | undefined>>
-): res is R<number | undefined> {
+function kicked(ctx: ParseContext, res: Partial<R<number | undefined>>): res is R<number | undefined> {
   const start = ctx.offset;
   if (token(ctx, S.KICKED)) {
     if (space(ctx)) {
@@ -191,10 +173,7 @@ function ok(ctx: ParseContext, res: Partial<R<Buffer>>): res is R<Buffer> {
   return false;
 }
 
-function inserted(
-  ctx: ParseContext,
-  res: Partial<R<number>>
-): res is R<number> {
+function inserted(ctx: ParseContext, res: Partial<R<number>>): res is R<number> {
   const start = ctx.offset;
   if (token(ctx, S.INSERTED)) {
     if (space(ctx)) {
@@ -225,10 +204,7 @@ function using(ctx: ParseContext, res: Partial<R<string>>): res is R<string> {
   return false;
 }
 
-function watching(
-  ctx: ParseContext,
-  res: Partial<R<number>>
-): res is R<number> {
+function watching(ctx: ParseContext, res: Partial<R<number>>): res is R<number> {
   const start = ctx.offset;
   if (token(ctx, S.WATCHING)) {
     if (space(ctx)) {
@@ -243,10 +219,7 @@ function watching(
   return false;
 }
 
-function reserved(
-  ctx: ParseContext,
-  res: Partial<R<[number, Buffer]>>
-): res is R<[number, Buffer]> {
+function reserved(ctx: ParseContext, res: Partial<R<[number, Buffer]>>): res is R<[number, Buffer]> {
   const start = ctx.offset;
   if (token(ctx, S.RESERVED)) {
     if (space(ctx)) {
@@ -258,10 +231,7 @@ function reserved(
           if (integer(ctx, len)) {
             // <bytes>
             if (crlf(ctx)) {
-              res.value = [
-                id.value,
-                ctx.buf.slice(ctx.offset, ctx.offset + len.value),
-              ];
+              res.value = [id.value, ctx.buf.slice(ctx.offset, ctx.offset + len.value)];
               ctx.offset += len.value; // skip bytes
               if (crlf(ctx)) {
                 return true;
