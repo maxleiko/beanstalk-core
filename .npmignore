@@ -4,6 +4,10 @@
 # don't publish all the followings
 lib/*.map
 lib/*.tsbuildinfo
+compose
+coverage
+.nyc_ouput
+.github
 test
 node_modules
 src
@@ -11,6 +15,8 @@ src
 tsconfig.json
 git2version
 yarn.lock
-.mocharrc.js
+.mocharc.js
 .eslintrc.js
 .eslintignore
+.nycrc.json
+.prettierrc
