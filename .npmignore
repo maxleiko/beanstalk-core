@@ -7,7 +7,7 @@ lib/*.tsbuildinfo
 compose
 coverage
 docs
-.nyc_ouput
+.nyc_output
 .github
 test
 node_modules
