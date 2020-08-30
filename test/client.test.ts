@@ -2,25 +2,28 @@ import { expect } from 'chai';
 import { BeanstalkClient } from '../src/client';
 import { IPutOptions } from '../src/types';
 
+const HOST = process.env.HOST ?? 'localhost';
+const PORT = parseInt(process.env.PORT ?? '11301', 10);
+
 describe('BeanstalkClient', () => {
   let client: BeanstalkClient;
   beforeEach(async () => {
     client = new BeanstalkClient();
-    await client.connect();
+    await client.connect(HOST, PORT);
   });
   afterEach(async () => {
     await client.quit();
   });
 
   it('put', async () => {
-    await client.connect();
+    await client.connect(HOST, PORT);
     const id = await client.put('Hello World');
     expect(typeof id).to.equal('number');
     await client.delete(id);
   });
 
   it('reserve', async () => {
-    await client.connect();
+    await client.connect(HOST, PORT);
     const i = await client.put('Hello World');
     expect(typeof i).to.equal('number');
     const [id, payload] = await client.reserve();
@@ -29,7 +32,7 @@ describe('BeanstalkClient', () => {
   });
 
   it('reserve (timeout)', async () => {
-    await client.connect();
+    await client.connect(HOST, PORT);
     await client.put('Hello World (timeout)');
     const [id, payload] = await client.reserve(1000);
     expect(payload.toString()).to.equal('Hello World (timeout)');
@@ -37,7 +40,7 @@ describe('BeanstalkClient', () => {
   });
 
   it('peek', async () => {
-    await client.connect();
+    await client.connect(HOST, PORT);
     const id = await client.put('Hello peek');
     const [id2, payload2] = await client.peek(id);
     expect(id2).to.equal(id);
@@ -46,7 +49,7 @@ describe('BeanstalkClient', () => {
   });
 
   it('peekReady', async () => {
-    await client.connect();
+    await client.connect(HOST, PORT);
     const id = await client.put('Hello peek ready');
     const [id2, payload2] = await client.peekReady();
     expect(id2).to.equal(id);
@@ -55,7 +58,7 @@ describe('BeanstalkClient', () => {
   });
 
   it('peekDelayed', async () => {
-    await client.connect();
+    await client.connect(HOST, PORT);
     const opts: IPutOptions = {
       priority: 0,
       delay: 2000,
@@ -69,7 +72,7 @@ describe('BeanstalkClient', () => {
   });
 
   it('peekBuried', async () => {
-    await client.connect();
+    await client.connect(HOST, PORT);
     const id = await client.put('Hello peek buried');
     await client.reserve();
     await client.bury(id);
@@ -80,7 +83,7 @@ describe('BeanstalkClient', () => {
   });
 
   it('kick', async () => {
-    await client.connect();
+    await client.connect(HOST, PORT);
     const id = await client.put('Hello kick');
     await client.reserve();
     await client.bury(id);
@@ -93,7 +96,7 @@ describe('BeanstalkClient', () => {
   });
 
   it('kickJob', async () => {
-    await client.connect();
+    await client.connect(HOST, PORT);
     const id = await client.put('Hello kick');
     await client.reserve();
     await client.bury(id);
@@ -106,7 +109,7 @@ describe('BeanstalkClient', () => {
   });
 
   it('release', async () => {
-    await client.connect();
+    await client.connect(HOST, PORT);
     const i = await client.put('Hello World (release)');
     expect(typeof i).to.equal('number');
     const [id, payload] = await client.reserve();
@@ -120,7 +123,7 @@ describe('BeanstalkClient', () => {
   const to_delete: number[] = [];
 
   it('use', async () => {
-    await client.connect();
+    await client.connect(HOST, PORT);
     const tube = await client.use('foo');
     expect(tube).to.eql('foo');
     const tasks = [
@@ -134,7 +137,7 @@ describe('BeanstalkClient', () => {
   });
 
   it('delete', async () => {
-    await client.connect();
+    await client.connect(HOST, PORT);
     await client.use('foo');
     for (const id of to_delete) {
       await client.delete(id);
@@ -142,20 +145,20 @@ describe('BeanstalkClient', () => {
   });
 
   it('stats', async () => {
-    await client.connect();
+    await client.connect(HOST, PORT);
     const stats = await client.stats();
     expect(stats).to.be.ok;
   });
 
   it('statsTube', async () => {
-    await client.connect();
+    await client.connect(HOST, PORT);
     const stats = await client.statsTube('default');
     expect(stats).to.be.ok;
     expect(stats['name']).to.equal('default');
   });
 
   it('listTubes', async () => {
-    await client.connect();
+    await client.connect(HOST, PORT);
     let tubes = await client.listTubes();
     expect(tubes).to.eql(['default']);
     await client.use('foo');
@@ -164,7 +167,7 @@ describe('BeanstalkClient', () => {
   });
 
   it('listTubesWatched', async () => {
-    await client.connect();
+    await client.connect(HOST, PORT);
     let count = await client.watch('foo');
     expect(count).to.equal(2);
     count = await client.watch('bar');
@@ -178,7 +181,7 @@ describe('BeanstalkClient', () => {
   });
 
   it('listTubeUsed', async () => {
-    await client.connect();
+    await client.connect(HOST, PORT);
     let tube = await client.listTubeUsed();
     expect(tube).to.equal('default');
     await client.use('foo');
@@ -187,13 +190,13 @@ describe('BeanstalkClient', () => {
   });
 
   it('pause', async () => {
-    await client.connect();
+    await client.connect(HOST, PORT);
     await client.use('foo');
     await client.pause('foo', 1000);
   });
 
   it('touch', async () => {
-    await client.connect();
+    await client.connect(HOST, PORT);
     const id = await client.put('Hello touch', { priority: 0, delay: 0, ttr: 2 });
     const [id2] = await client.reserve();
     // wait for it to be DEADLINE_SOON'ed by server

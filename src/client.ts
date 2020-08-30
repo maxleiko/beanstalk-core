@@ -34,11 +34,15 @@ export class BeanstalkClient {
     this._pendingRequests = [];
 
     this._socket.on('data', (chunk) => {
-      const messages = parse(chunk);
-      for (const msg of messages) {
-        const pending = this._pendingRequests.pop();
-        if (pending) {
-          pending.emit('resolve', msg);
+      const pending = this._pendingRequests.pop();
+      if (pending) {
+        try {
+          const messages = parse(chunk);
+          for (const msg of messages) {
+            pending.emit('resolve', msg);
+          }
+        } catch (err) {
+          pending.emit('reject', err);
         }
       }
     });

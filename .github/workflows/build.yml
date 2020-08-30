@@ -24,3 +24,5 @@ jobs:
     - run: yarn
     - run: yarn build
     - run: yarn test
+      env:
+        PORT: 11300

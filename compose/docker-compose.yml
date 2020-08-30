@@ -4,7 +4,7 @@ services:
   beanstalkd:
     image: schickling/beanstalkd:latest
     ports:
-      - '127.0.0.1:11300:11300'
+      - '127.0.0.1:${PORT:-11301}:11300'
     command: -b /tmp -f0 -z 104857600 -s 104857600
 
   beanstalkd-web:
@@ -12,7 +12,7 @@ services:
     volumes:
       - ./aurora.toml:/aurora.toml
     ports:
-      - '127.0.0.1:3030:3000'
+      - '127.0.0.1:3333:3000'
     command: -c /aurora.toml
     depends_on:
       - beanstalkd
