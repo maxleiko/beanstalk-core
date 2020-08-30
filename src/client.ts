@@ -34,7 +34,6 @@ export class BeanstalkClient {
     this._pendingRequests = [];
 
     this._socket.on('data', (chunk) => {
-      // FIXME are we sure that we cannot receive messages whithout sending one first?
       const emitter = this._pendingRequests.pop();
       if (emitter) {
         try {
