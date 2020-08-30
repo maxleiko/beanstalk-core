@@ -38,8 +38,7 @@ export class BeanstalkClient {
     this._socket.on('data', (chunk) => {
       chunks.push(chunk);
 
-      const index = this._pendingRequests.length - 1;
-      const emitter = this._pendingRequests[index];
+      const emitter = this._pendingRequests[0];
       if (emitter) {
         try {
           const buffer = Buffer.concat(chunks);
@@ -51,7 +50,7 @@ export class BeanstalkClient {
             // clean-up
             chunks.length = 0;
             messages.length = 0;
-            this._pendingRequests.splice(index);
+            this._pendingRequests.shift();
           }
         } catch (err) {
           emitter.emit('reject', err);

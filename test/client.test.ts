@@ -32,6 +32,7 @@ describe('BeanstalkClient', () => {
       client.put('Hello World 4'),
     ];
     const ids = await Promise.all(tasks);
+    expect(ids[1]).to.be.greaterThan(ids[0]);
     for (const id of ids) {
       await client.delete(id);
     }
