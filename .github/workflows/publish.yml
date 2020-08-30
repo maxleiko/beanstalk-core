@@ -16,7 +16,7 @@ jobs:
       with:
         node-version: 10.x
     - run: yarn
-    - run: yarn build
+    - run: yarn test
 
     - name: Publish if version has been updated
       uses: pascalgn/npm-publish-action@06e0830ea83eea10ed4a62654eeaedafb8bf50fc
