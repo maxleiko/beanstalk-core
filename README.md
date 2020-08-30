@@ -1,6 +1,8 @@
 ## @beanstalk/core
 
-[Documentation](https://maxleiko.github.io/beanstalk-core/) | ![build](https://img.shields.io/github/workflow/status/maxleiko/beanstalk-core/build) | ![npm](https://img.shields.io/npm/v/@beanstalk/core)
+![build](https://img.shields.io/github/workflow/status/maxleiko/beanstalk-core/build) | ![npm](https://img.shields.io/npm/v/@beanstalk/core)
+
+[Documentation](https://maxleiko.github.io/beanstalk-core/)
 
 A 0 dependency, full-featured, battle-tested beanstalk client library.  
 
