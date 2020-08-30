@@ -1,6 +1,8 @@
 ## @beanstalk/core
 
-Yet another Beanstalkd library. With 0 dependency.
+[Documentation](https://maxleiko.github.io/beanstalk-core/) | ![build](https://img.shields.io/github/workflow/status/maxleiko/beanstalk-core/build) | ![npm](https://img.shields.io/npm/v/@beanstalk/core)
+
+A 0 dependency, full-featured, battle-tested beanstalk client library.  
 
 ### Installation
 ```sh
