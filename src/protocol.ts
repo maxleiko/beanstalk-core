@@ -2,12 +2,6 @@ import { ParseContext, R } from './internal_types';
 import { Msg, Inserted, Using, Reserved, Ok, Watching, Found, Kicked } from './types';
 import { space, integer, crlf, string } from './parse-utils';
 
-export class BeanstalkParseError extends Error {
-  constructor(msg: string, readonly buf: Buffer) {
-    super(msg);
-  }
-}
-
 /**
  * Success codes
  */
@@ -45,68 +39,72 @@ export enum E {
   UNKNOWN_COMMAND = 'UNKNOWN_COMMAND',
 }
 
-export function parse(buf: Buffer): Msg[] {
+/**
+ * @param buf a buffer containing Beanstalkd response messages
+ * @param msgs fills this array with the parsed messages
+ * @returns the number of bytes read
+ */
+export function parse(buf: Buffer, msgs: Msg[]): number {
   if (buf.length === 0) {
-    throw new BeanstalkParseError('Empty message', buf);
+    return 0;
   }
 
-  const results: Msg[] = [];
   const ctx: ParseContext = { buf, offset: 0 };
   const res: Partial<R> = {};
 
   while (ctx.offset < ctx.buf.length) {
     if (inserted(ctx, res)) {
-      results.push({ code: S.INSERTED, value: res.value } as Inserted); // casting to guard from future changes
+      msgs.push({ code: S.INSERTED, value: res.value } as Inserted); // casting to guard from future changes
     } else if (using(ctx, res)) {
-      results.push({ code: S.USING, value: res.value } as Using); // casting to guard from future changes
+      msgs.push({ code: S.USING, value: res.value } as Using); // casting to guard from future changes
     } else if (reserved(ctx, res)) {
-      results.push({ code: S.RESERVED, value: res.value } as Reserved); // casting to guard from future changes
+      msgs.push({ code: S.RESERVED, value: res.value } as Reserved); // casting to guard from future changes
     } else if (ok(ctx, res)) {
-      results.push({ code: S.OK, value: res.value } as Ok); // casting to guard from future changes
+      msgs.push({ code: S.OK, value: res.value } as Ok); // casting to guard from future changes
     } else if (watching(ctx, res)) {
-      results.push({ code: S.WATCHING, value: res.value } as Watching); // casting to guard from future changes
+      msgs.push({ code: S.WATCHING, value: res.value } as Watching); // casting to guard from future changes
     } else if (found(ctx, res)) {
-      results.push({ code: S.FOUND, value: res.value } as Found); // casting to guard from future changes
+      msgs.push({ code: S.FOUND, value: res.value } as Found); // casting to guard from future changes
     } else if (kicked(ctx, res)) {
-      results.push({ code: S.KICKED, value: res.value } as Kicked); // casting to guard from future changes
+      msgs.push({ code: S.KICKED, value: res.value } as Kicked); // casting to guard from future changes
     } else if (token(ctx, S.RELEASED, true)) {
-      results.push({ code: S.RELEASED });
+      msgs.push({ code: S.RELEASED });
     } else if (token(ctx, E.BURIED, true)) {
-      results.push({ code: E.BURIED });
+      msgs.push({ code: E.BURIED });
     } else if (token(ctx, E.DRAINING, true)) {
-      results.push({ code: E.DRAINING });
+      msgs.push({ code: E.DRAINING });
     } else if (token(ctx, E.EXPECTED_CRLF, true)) {
-      results.push({ code: E.EXPECTED_CRLF });
+      msgs.push({ code: E.EXPECTED_CRLF });
     } else if (token(ctx, E.JOB_TOO_BIG, true)) {
-      results.push({ code: E.JOB_TOO_BIG });
+      msgs.push({ code: E.JOB_TOO_BIG });
     } else if (token(ctx, S.DELETED, true)) {
-      results.push({ code: S.DELETED });
+      msgs.push({ code: S.DELETED });
     } else if (token(ctx, E.NOT_FOUND, true)) {
-      results.push({ code: E.NOT_FOUND });
+      msgs.push({ code: E.NOT_FOUND });
     } else if (token(ctx, E.DEADLINE_SOON, true)) {
-      results.push({ code: E.DEADLINE_SOON });
+      msgs.push({ code: E.DEADLINE_SOON });
     } else if (token(ctx, E.TIMED_OUT, true)) {
-      results.push({ code: E.TIMED_OUT });
+      msgs.push({ code: E.TIMED_OUT });
     } else if (token(ctx, E.NOT_IGNORED, true)) {
-      results.push({ code: E.NOT_IGNORED });
+      msgs.push({ code: E.NOT_IGNORED });
     } else if (token(ctx, E.BAD_FORMAT, true)) {
-      results.push({ code: E.BAD_FORMAT });
+      msgs.push({ code: E.BAD_FORMAT });
     } else if (token(ctx, E.UNKNOWN_COMMAND, true)) {
-      results.push({ code: E.UNKNOWN_COMMAND });
+      msgs.push({ code: E.UNKNOWN_COMMAND });
     } else if (token(ctx, E.OUT_OF_MEMORY, true)) {
-      results.push({ code: E.OUT_OF_MEMORY });
+      msgs.push({ code: E.OUT_OF_MEMORY });
     } else if (token(ctx, E.INTERNAL_ERROR, true)) {
-      results.push({ code: E.INTERNAL_ERROR });
+      msgs.push({ code: E.INTERNAL_ERROR });
     } else if (token(ctx, S.PAUSED, true)) {
-      results.push({ code: S.PAUSED });
+      msgs.push({ code: S.PAUSED });
     } else if (token(ctx, S.TOUCHED, true)) {
-      results.push({ code: S.TOUCHED });
+      msgs.push({ code: S.TOUCHED });
     } else {
-      throw new BeanstalkParseError('Unable to parse beanstalk message', buf);
+      return ctx.offset;
     }
   }
 
-  return results;
+  return ctx.offset;
 }
 
 function found(ctx: ParseContext, res: Partial<R<[number, Buffer]>>): res is R<[number, Buffer]> {

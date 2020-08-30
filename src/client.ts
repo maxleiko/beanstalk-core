@@ -33,13 +33,25 @@ export class BeanstalkClient {
     this._socket = new Socket();
     this._pendingRequests = [];
 
+    const chunks: Uint8Array[] = [];
+    const messages: Msg[] = [];
     this._socket.on('data', (chunk) => {
-      const emitter = this._pendingRequests.pop();
+      chunks.push(chunk);
+
+      const index = this._pendingRequests.length - 1;
+      const emitter = this._pendingRequests[index];
       if (emitter) {
         try {
-          const messages = parse(chunk);
-          for (const msg of messages) {
-            emitter.emit('resolve', msg);
+          const buffer = Buffer.concat(chunks);
+          const bRead = parse(buffer, messages);
+          if (bRead > 0 && bRead === buffer.length) {
+            for (const msg of messages) {
+              emitter.emit('resolve', msg);
+            }
+            // clean-up
+            chunks.length = 0;
+            messages.length = 0;
+            this._pendingRequests.splice(index);
           }
         } catch (err) {
           emitter.emit('reject', err);
@@ -830,17 +842,21 @@ export class BeanstalkClient {
     const emitter = new EventEmitter();
 
     const resultPromise = new Promise<M | AnyError>((resolve, reject) => {
+      // const timeout = setTimeout(() => {
+      //   emitter.emit('timeout', new BeanstalkError(`Command '${cmd.slice(0, 10).toString()}' timed-out`, E.INTERNAL_ERROR));
+      // }, parseInt(process.env.TIMEOUT ?? '5') * 1000);
       emitter.on('resolve', resolve);
       emitter.on('reject', reject);
+      // emitter.on('timeout', reject);
     });
 
     this._pendingRequests.push(emitter);
 
     // FIXME consider adding a global timeout option to prevent infinite hanging on answers
-    
+
     try {
       await new Promise((resolve, reject) => {
-        this._socket.write(cmd, (err) => err ? reject(err) : resolve());
+        this._socket.write(cmd, (err) => (err ? reject(err) : resolve()));
       });
     } catch (err) {
       // if an error occured while writing to socket then no response will ever
