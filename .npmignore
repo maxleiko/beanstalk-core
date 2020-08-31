@@ -21,3 +21,4 @@ yarn.lock
 .eslintignore
 .nycrc.json
 .prettierrc
+.jekyll-config.yml
