@@ -1,25 +1,8 @@
 import { Socket } from 'net';
 import { EventEmitter } from 'events';
-import {
-  IPutOptions,
-  IReleaseOptions,
-  Inserted,
-  Using,
-  Deleted,
-  Released,
-  Ok,
-  Msg,
-  AnyError,
-  Reserved,
-  Watching,
-  Found,
-  Kicked,
-  Paused,
-  Touched,
-  Buried,
-} from './types';
+import { IPutOptions, IReleaseOptions, Msg } from './types';
 import { BeanstalkError } from './error';
-import { S, parse, E } from './protocol';
+import { M, parse } from './protocol';
 import { yamlList, yamlMap } from './yaml-parser';
 
 const PUT_DEFAULT: IPutOptions = { priority: 0, delay: 0, ttr: 60 };
@@ -38,33 +21,46 @@ export class BeanstalkClient {
     this._socket.on('data', (chunk) => {
       chunks.push(chunk);
 
-      const emitter = this._pendingRequests[0];
-      if (emitter) {
-        try {
-          const buffer = Buffer.concat(chunks);
-          const bRead = parse(buffer, messages);
-          if (bRead > 0 && bRead === buffer.length) {
-            for (const msg of messages) {
-              emitter.emit('resolve', msg);
-            }
-            // clean-up
-            chunks.length = 0;
-            messages.length = 0;
+      const buffer = Buffer.concat(chunks);
+      const bRead = parse(buffer, messages);
+      if (bRead > 0 && bRead === buffer.length) {
+        for (const msg of messages) {
+          const emitter = this._pendingRequests[0];
+          if (emitter) {
+            emitter.emit('resolve', msg);
             this._pendingRequests.shift();
+          } else {
+            console.error(`@beanstalk/core lost msg [code=${msg.code}]`);
           }
-        } catch (err) {
-          emitter.emit('reject', err);
         }
+        // clean-up
+        chunks.length = 0;
+        messages.length = 0;
       }
     });
   }
 
-  async connect(host = 'localhost', port = 11300): Promise<void> {
+  /**
+   *
+   * @param host beanstalkd host (defaults to `localhost`)
+   * @param port beanstalkd port (defaults to `11300`)
+   * @param timeout connection timeout in milliseconds (defaults to `-1` = no timeout)
+   */
+  async connect(host = 'localhost', port = 11300, timeout = -1): Promise<void> {
     return new Promise((resolve, reject) => {
       const errorHandler = (err: Error) => reject(err);
+      const timeoutHandler = () => this._socket.destroy(new Error('Connection timeout'));
+
+      if (timeout > 0) {
+        this._socket.setTimeout(timeout);
+        this._socket.once('timeout', timeoutHandler);
+      }
       this._socket.once('error', errorHandler);
       this._socket.connect(port, host, () => {
+        // when connected: remove error/timeout handlers
+        this._socket.off('timeout', timeoutHandler);
         this._socket.off('error', errorHandler);
+
         resolve();
       });
     });
@@ -150,11 +146,18 @@ export class BeanstalkClient {
     const head = Buffer.from(`put ${opts.priority} ${opts.delay} ${opts.ttr} ${payload.byteLength}\r\n`);
     const tail = Buffer.from('\r\n');
     const cmd = Buffer.concat([head, payload, tail]);
-    const res = await this._send<Inserted>(cmd);
-    if (res.code === S.INSERTED) {
-      return res.value;
+    const res = await this._send(cmd);
+
+    switch (res.code) {
+      case M.INSERTED:
+        return res.value;
+      case M.BURIED:
+        // XXX is this really considered an error?
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        throw new BeanstalkError(`Job '${res.value!}' has been put in the buried queue`, res.code);
+      default:
+        throw new BeanstalkError('Unable to put a new job', res.code);
     }
-    throw new BeanstalkError('Unable to put a new job', res.code);
   }
 
   /**
@@ -177,8 +180,8 @@ export class BeanstalkClient {
    */
   async use(tube: string): Promise<string> {
     const cmd = Buffer.from(`use ${tube}\r\n`);
-    const res = await this._send<Using>(cmd);
-    if (res.code === S.USING) {
+    const res = await this._send(cmd);
+    if (res.code === M.USING) {
       return res.value;
     }
     throw new BeanstalkError(`Unable to use tube '${tube}'`, res.code);
@@ -206,8 +209,8 @@ export class BeanstalkClient {
    */
   async delete(id: number): Promise<void> {
     const cmd = Buffer.from(`delete ${id}\r\n`);
-    const res = await this._send<Deleted>(cmd);
-    if (res.code === S.DELETED) {
+    const res = await this._send(cmd);
+    if (res.code === M.DELETED) {
       return;
     }
     throw new BeanstalkError(`Unable to delete job id '${id}'`, res.code);
@@ -279,8 +282,8 @@ export class BeanstalkClient {
     const withTimeout = typeof timeout === 'number';
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     const cmd = withTimeout ? Buffer.from(`reserve-with-timeout ${timeout}\r\n`) : Buffer.from('reserve\r\n');
-    const res = await this._send<Reserved>(cmd);
-    if (res.code === S.RESERVED) {
+    const res = await this._send(cmd);
+    if (res.code === M.RESERVED) {
       return res.value;
     }
     throw new BeanstalkError('Unable to reserve a job', res.code);
@@ -308,7 +311,7 @@ export class BeanstalkClient {
    */
   // async reserveJob(id: number): Promise<[number, Buffer]> {
   //   const cmd = Buffer.from(`reserve-job ${id}\r\n`);
-  //   const res = await this._send<Reserved>(cmd);
+  //   const res = await this._send(cmd);
   //   if (res.code === S.RESERVED) {
   //     return res.value;
   //   }
@@ -343,8 +346,8 @@ export class BeanstalkClient {
    */
   async release(id: number, opts: IReleaseOptions = REL_DEFAULT): Promise<void> {
     const cmd = Buffer.from(`release ${id} ${opts.priority} ${opts.delay}\r\n`);
-    const res = await this._send<Released>(cmd);
-    if (res.code === S.RELEASED) {
+    const res = await this._send(cmd);
+    if (res.code === M.RELEASED) {
       return;
     }
     throw new BeanstalkError(`Unable to release job id '${id}'`, res.code);
@@ -371,8 +374,8 @@ export class BeanstalkClient {
    */
   async watch(tube: string): Promise<number> {
     const cmd = Buffer.from(`watch ${tube}\r\n`);
-    const res = await this._send<Watching>(cmd);
-    if (res.code === S.WATCHING) {
+    const res = await this._send(cmd);
+    if (res.code === M.WATCHING) {
       return res.value;
     }
     throw new BeanstalkError(`Unable to watch tube '${tube}'`, res.code);
@@ -397,8 +400,8 @@ export class BeanstalkClient {
    */
   async ignore(tube: string): Promise<number> {
     const cmd = Buffer.from(`ignore ${tube}\r\n`);
-    const res = await this._send<Watching>(cmd);
-    if (res.code === S.WATCHING) {
+    const res = await this._send(cmd);
+    if (res.code === M.WATCHING) {
       return res.value;
     }
     throw new BeanstalkError(`Unable to ignore tube '${tube}'`, res.code);
@@ -431,8 +434,8 @@ export class BeanstalkClient {
    */
   async peek(id: number): Promise<[number, Buffer]> {
     const cmd = Buffer.from(`peek ${id}\r\n`);
-    const res = await this._send<Found>(cmd);
-    if (res.code === S.FOUND) {
+    const res = await this._send(cmd);
+    if (res.code === M.FOUND) {
       return res.value;
     }
     throw new BeanstalkError(`Unable to peek job id '${id}'`, res.code);
@@ -464,8 +467,8 @@ export class BeanstalkClient {
    */
   async peekReady(): Promise<[number, Buffer]> {
     const cmd = Buffer.from(`peek-ready\r\n`);
-    const res = await this._send<Found>(cmd);
-    if (res.code === S.FOUND) {
+    const res = await this._send(cmd);
+    if (res.code === M.FOUND) {
       return res.value;
     }
     throw new BeanstalkError('Unable to peek the next ready job', res.code);
@@ -497,8 +500,8 @@ export class BeanstalkClient {
    */
   async peekDelayed(): Promise<[number, Buffer]> {
     const cmd = Buffer.from(`peek-delayed\r\n`);
-    const res = await this._send<Found>(cmd);
-    if (res.code === S.FOUND) {
+    const res = await this._send(cmd);
+    if (res.code === M.FOUND) {
       return res.value;
     }
     throw new BeanstalkError('Unable to peek the delayed job with the shortest delay left', res.code);
@@ -530,8 +533,8 @@ export class BeanstalkClient {
    */
   async peekBuried(): Promise<[number, Buffer]> {
     const cmd = Buffer.from(`peek-buried\r\n`);
-    const res = await this._send<Found>(cmd);
-    if (res.code === S.FOUND) {
+    const res = await this._send(cmd);
+    if (res.code === M.FOUND) {
       return res.value;
     }
     throw new BeanstalkError('Unable to peek the next job in the list of buried jobs', res.code);
@@ -557,8 +560,8 @@ export class BeanstalkClient {
    */
   async kick(bound: number): Promise<number> {
     const cmd = Buffer.from(`kick ${bound}\r\n`);
-    const res = await this._send<Kicked>(cmd);
-    if (res.code === S.KICKED) {
+    const res = await this._send(cmd);
+    if (res.code === M.KICKED) {
       return res.value as number;
     }
     throw new BeanstalkError('Unable to kick jobs', res.code);
@@ -585,8 +588,8 @@ export class BeanstalkClient {
    */
   async kickJob(id: number): Promise<void> {
     const cmd = Buffer.from(`kick-job ${id}\r\n`);
-    const res = await this._send<Kicked>(cmd);
-    if (res.code === S.KICKED) {
+    const res = await this._send(cmd);
+    if (res.code === M.KICKED) {
       return;
     }
     throw new BeanstalkError(`Unable to kick job id '${id}'`, res.code);
@@ -615,8 +618,8 @@ export class BeanstalkClient {
    */
   async statsTube(tube: string): Promise<Record<string, string | number | boolean>> {
     const cmd = Buffer.from(`stats-tube ${tube}\r\n`);
-    const res = await this._send<Ok>(cmd);
-    if (res.code === S.OK) {
+    const res = await this._send(cmd);
+    if (res.code === M.OK) {
       return yamlMap(res.value);
     }
     throw new BeanstalkError(`Unable to stats tube '${tube}'`, res.code);
@@ -645,8 +648,8 @@ export class BeanstalkClient {
    */
   async statsJob(id: number): Promise<Record<string, string | number | boolean>> {
     const cmd = Buffer.from(`stats-job ${id}\r\n`);
-    const res = await this._send<Ok>(cmd);
-    if (res.code === S.OK) {
+    const res = await this._send(cmd);
+    if (res.code === M.OK) {
       return yamlMap(res.value);
     }
     throw new BeanstalkError(`Unable to stats job id '${id}'`, res.code);
@@ -670,8 +673,8 @@ export class BeanstalkClient {
    */
   async stats(): Promise<Record<string, string | number | boolean>> {
     const cmd = Buffer.from(`stats\r\n`);
-    const res = await this._send<Ok>(cmd);
-    if (res.code === S.OK) {
+    const res = await this._send(cmd);
+    if (res.code === M.OK) {
       return yamlMap(res.value);
     }
     throw new BeanstalkError('Unable to stats the system', res.code);
@@ -694,8 +697,8 @@ export class BeanstalkClient {
    */
   async listTubes(): Promise<string[]> {
     const cmd = Buffer.from('list-tubes\r\n');
-    const res = await this._send<Ok>(cmd);
-    if (res.code === S.OK) {
+    const res = await this._send(cmd);
+    if (res.code === M.OK) {
       return yamlList(res.value);
     }
     throw new BeanstalkError('Unable to list tubes', res.code);
@@ -719,8 +722,8 @@ export class BeanstalkClient {
    */
   async listTubesWatched(): Promise<string[]> {
     const cmd = Buffer.from('list-tubes-watched\r\n');
-    const res = await this._send<Ok>(cmd);
-    if (res.code === S.OK) {
+    const res = await this._send(cmd);
+    if (res.code === M.OK) {
       return yamlList(res.value);
     }
     throw new BeanstalkError('Unable to list watched tubes', res.code);
@@ -741,8 +744,8 @@ export class BeanstalkClient {
    */
   async listTubeUsed(): Promise<string> {
     const cmd = Buffer.from('list-tube-used\r\n');
-    const res = await this._send<Using>(cmd);
-    if (res.code === S.USING) {
+    const res = await this._send(cmd);
+    if (res.code === M.USING) {
       return res.value;
     }
     throw new BeanstalkError('Unable to list used tube', res.code);
@@ -768,8 +771,8 @@ export class BeanstalkClient {
    */
   async pause(tube: string, delay: number): Promise<void> {
     const cmd = Buffer.from(`pause-tube ${tube} ${delay}\r\n`);
-    const res = await this._send<Paused>(cmd);
-    if (res.code === S.PAUSED) {
+    const res = await this._send(cmd);
+    if (res.code === M.PAUSED) {
       return;
     }
     throw new BeanstalkError(`Unable to pause tube '${tube}'`, res.code);
@@ -799,8 +802,8 @@ export class BeanstalkClient {
    */
   async touch(id: number): Promise<void> {
     const cmd = Buffer.from(`touch ${id}\r\n`);
-    const res = await this._send<Touched>(cmd);
-    if (res.code === S.TOUCHED) {
+    const res = await this._send(cmd);
+    if (res.code === M.TOUCHED) {
       return;
     }
     throw new BeanstalkError(`Unable to touch job id '${id}'`, res.code);
@@ -830,33 +833,27 @@ export class BeanstalkClient {
    */
   async bury(id: number, priority = 1024): Promise<void> {
     const cmd = Buffer.from(`bury ${id} ${priority}\r\n`);
-    const res = await this._send<Buried>(cmd);
-    if (res.code === E.BURIED) {
+    const res = await this._send(cmd);
+    if (res.code === M.BURIED) {
       return;
     }
     throw new BeanstalkError(`Unable to bury job id '${id}'`, res.code);
   }
 
-  private async _send<M = Msg>(cmd: Buffer): Promise<M | AnyError> {
+  private async _send(cmd: Buffer): Promise<Msg> {
     const emitter = new EventEmitter();
 
-    const resultPromise = new Promise<M | AnyError>((resolve, reject) => {
-      // const timeout = setTimeout(() => {
-      //   emitter.emit('timeout', new BeanstalkError(`Command '${cmd.slice(0, 10).toString()}' timed-out`, E.INTERNAL_ERROR));
-      // }, parseInt(process.env.TIMEOUT ?? '5') * 1000);
-      emitter.on('resolve', resolve);
-      emitter.on('reject', reject);
-      // emitter.on('timeout', reject);
+    const resultPromise = new Promise<Msg>((resolve, reject) => {
+      emitter.once('resolve', resolve);
+      emitter.once('reject', reject);
     });
 
     this._pendingRequests.push(emitter);
 
     // FIXME consider adding a global timeout option to prevent infinite hanging on answers
-
+    // or maybe we want to hang indefinitely?
     try {
-      await new Promise((resolve, reject) => {
-        this._socket.write(cmd, (err) => (err ? reject(err) : resolve()));
-      });
+      await new Promise((r, e) => this._socket.write(cmd, (err) => (err ? e(err) : r())));
     } catch (err) {
       // if an error occured while writing to socket then no response will ever
       // be received, so the pending request will never dequeue: remove it

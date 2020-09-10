@@ -1,4 +1,4 @@
-import { E, S } from './protocol';
+import { M } from './protocol';
 
 export type Scalar = string | number | boolean;
 
@@ -20,41 +20,59 @@ export interface IReleaseOptions {
   delay: number;
 }
 
-export type Msg =
-  | AnyError
-  | Ok
-  | Inserted
-  | Deleted
-  | Using
-  | Reserved
-  | Released
-  | NotFound
-  | Buried
-  | ExpectedCrlf
-  | JobTooBig
-  | Draining
-  | Watching
-  | NotIgnored
-  | Found
-  | Kicked
-  | Paused
-  | Touched;
+// export type AnyError =
+//   | ExpectedCrlf
+//   | InternalError
+//   | JobTooBig
+//   | BadFormat
+//   | OutOfMemory
+//   | UnknownCommand;
 
-export type AnyError = { code: E };
-export type Deleted = { code: S.DELETED };
-export type Released = { code: S.RELEASED };
-export type NotFound = { code: E.NOT_FOUND };
-export type Buried = { code: E.BURIED };
-export type ExpectedCrlf = { code: E.EXPECTED_CRLF };
-export type JobTooBig = { code: E.JOB_TOO_BIG };
-export type Draining = { code: E.DRAINING };
-export type NotIgnored = { code: E.NOT_IGNORED };
-export type Paused = { code: S.PAUSED };
-export type Touched = { code: S.TOUCHED };
-export type Inserted = { code: S.INSERTED; value: number };
-export type Using = { code: S.USING; value: string };
-export type Ok = { code: S.OK; value: Buffer };
-export type Reserved = { code: S.RESERVED; value: [number, Buffer] };
-export type Found = { code: S.FOUND; value: [number, Buffer] };
-export type Watching = { code: S.WATCHING; value: number };
-export type Kicked = { code: S.KICKED; value: number | undefined };
+export type Msg =
+  | BadFormat
+  | Buried
+  | DeadlineSoon
+  | Deleted
+  | Draining
+  | ExpectedCrlf
+  | Found
+  | Inserted
+  | InternalError
+  | JobTooBig
+  | Kicked
+  | NotFound
+  | NotIgnored
+  | Ok
+  | OutOfMemory
+  | Paused
+  | Released
+  | Reserved
+  | TimedOut
+  | Touched
+  | Using
+  | Watching
+  | UnknownCommand
+
+export type BadFormat      = { code: M.BAD_FORMAT };
+export type Buried         = { code: M.BURIED, value: number | undefined; };
+export type DeadlineSoon   = { code: M.DEADLINE_SOON };
+export type Deleted        = { code: M.DELETED };
+export type Draining       = { code: M.DRAINING };
+export type ExpectedCrlf   = { code: M.EXPECTED_CRLF };
+export type Found          = { code: M.FOUND; value: [number, Buffer]; };
+export type Inserted       = { code: M.INSERTED; value: number; };
+export type InternalError  = { code: M.INTERNAL_ERROR };
+export type JobTooBig      = { code: M.JOB_TOO_BIG };
+export type Kicked         = { code: M.KICKED; value: number | undefined; };
+export type NotFound       = { code: M.NOT_FOUND };
+export type NotIgnored     = { code: M.NOT_IGNORED };
+export type Ok             = { code: M.OK; value: Buffer; };
+export type OutOfMemory    = { code: M.OUT_OF_MEMORY };
+export type Paused         = { code: M.PAUSED };
+export type Released       = { code: M.RELEASED };
+export type Reserved       = { code: M.RESERVED; value: [number, Buffer]; };
+export type TimedOut       = { code: M.TIMED_OUT };
+export type Touched        = { code: M.TOUCHED };
+export type UnknownCommand = { code: M.UNKNOWN_COMMAND };
+export type Using          = { code: M.USING; value: string; };
+export type Watching       = { code: M.WATCHING; value: number; };

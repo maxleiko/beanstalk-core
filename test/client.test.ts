@@ -5,7 +5,7 @@ import { IPutOptions } from '../src/types';
 const HOST = process.env.HOST ?? 'localhost';
 const PORT = parseInt(process.env.PORT ?? '11301', 10);
 
-describe('BeanstalkClient', () => {
+describe('client', () => {
   let client: BeanstalkClient;
   beforeEach(async () => {
     client = new BeanstalkClient();

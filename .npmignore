@@ -4,6 +4,7 @@
 # don't publish all the followings
 lib/*.map
 lib/*.tsbuildinfo
+protocol.txt
 compose
 coverage
 docs

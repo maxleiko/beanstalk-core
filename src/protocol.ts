@@ -1,31 +1,24 @@
 import { ParseContext, R } from './internal_types';
-import { Msg, Inserted, Using, Reserved, Ok, Watching, Found, Kicked } from './types';
+import { Msg, Inserted, Using, Reserved, Ok, Watching, Found, Kicked, Buried } from './types';
 import { space, integer, crlf, string } from './parse-utils';
 
 /**
- * Success codes
+ * Messages
  */
 // prettier-ignore
-export enum S {
-  DELETED  = 'DELETED',
-  INSERTED = 'INSERTED',
-  RELEASED = 'RELEASED',
-  RESERVED = 'RESERVED',
-  USING    = 'USING',
-  OK       = 'OK',
-  WATCHING = 'WATCHING',
-  FOUND    = 'FOUND',
-  KICKED   = 'KICKED',
-  PAUSED   = 'PAUSED',
-  TOUCHED  = 'TOUCHED',
-}
-
-/**
- * Error codes
- */
-// prettier-ignore
-export enum E {
+export enum M {
+  DELETED         = 'DELETED',
+  INSERTED        = 'INSERTED',
   BURIED          = 'BURIED',
+  RELEASED        = 'RELEASED',
+  RESERVED        = 'RESERVED',
+  USING           = 'USING',
+  OK              = 'OK',
+  WATCHING        = 'WATCHING',
+  FOUND           = 'FOUND',
+  KICKED          = 'KICKED',
+  PAUSED          = 'PAUSED',
+  TOUCHED         = 'TOUCHED',
   DRAINING        = 'DRAINING',
   EXPECTED_CRLF   = 'EXPECTED_CRLF',
   JOB_TOO_BIG     = 'JOB_TOO_BIG',
@@ -54,51 +47,51 @@ export function parse(buf: Buffer, msgs: Msg[]): number {
 
   while (ctx.offset < ctx.buf.length) {
     if (inserted(ctx, res)) {
-      msgs.push({ code: S.INSERTED, value: res.value } as Inserted); // casting to guard from future changes
+      msgs.push({ code: M.INSERTED, value: res.value } as Inserted); // casting to guard from future changes
+    } else if (buried(ctx, res)) {
+      msgs.push({ code: M.BURIED, value: res.value } as Buried); // casting to guard from future changes
     } else if (using(ctx, res)) {
-      msgs.push({ code: S.USING, value: res.value } as Using); // casting to guard from future changes
+      msgs.push({ code: M.USING, value: res.value } as Using); // casting to guard from future changes
     } else if (reserved(ctx, res)) {
-      msgs.push({ code: S.RESERVED, value: res.value } as Reserved); // casting to guard from future changes
+      msgs.push({ code: M.RESERVED, value: res.value } as Reserved); // casting to guard from future changes
     } else if (ok(ctx, res)) {
-      msgs.push({ code: S.OK, value: res.value } as Ok); // casting to guard from future changes
+      msgs.push({ code: M.OK, value: res.value } as Ok); // casting to guard from future changes
     } else if (watching(ctx, res)) {
-      msgs.push({ code: S.WATCHING, value: res.value } as Watching); // casting to guard from future changes
+      msgs.push({ code: M.WATCHING, value: res.value } as Watching); // casting to guard from future changes
     } else if (found(ctx, res)) {
-      msgs.push({ code: S.FOUND, value: res.value } as Found); // casting to guard from future changes
+      msgs.push({ code: M.FOUND, value: res.value } as Found); // casting to guard from future changes
     } else if (kicked(ctx, res)) {
-      msgs.push({ code: S.KICKED, value: res.value } as Kicked); // casting to guard from future changes
-    } else if (token(ctx, S.RELEASED, true)) {
-      msgs.push({ code: S.RELEASED });
-    } else if (token(ctx, E.BURIED, true)) {
-      msgs.push({ code: E.BURIED });
-    } else if (token(ctx, E.DRAINING, true)) {
-      msgs.push({ code: E.DRAINING });
-    } else if (token(ctx, E.EXPECTED_CRLF, true)) {
-      msgs.push({ code: E.EXPECTED_CRLF });
-    } else if (token(ctx, E.JOB_TOO_BIG, true)) {
-      msgs.push({ code: E.JOB_TOO_BIG });
-    } else if (token(ctx, S.DELETED, true)) {
-      msgs.push({ code: S.DELETED });
-    } else if (token(ctx, E.NOT_FOUND, true)) {
-      msgs.push({ code: E.NOT_FOUND });
-    } else if (token(ctx, E.DEADLINE_SOON, true)) {
-      msgs.push({ code: E.DEADLINE_SOON });
-    } else if (token(ctx, E.TIMED_OUT, true)) {
-      msgs.push({ code: E.TIMED_OUT });
-    } else if (token(ctx, E.NOT_IGNORED, true)) {
-      msgs.push({ code: E.NOT_IGNORED });
-    } else if (token(ctx, E.BAD_FORMAT, true)) {
-      msgs.push({ code: E.BAD_FORMAT });
-    } else if (token(ctx, E.UNKNOWN_COMMAND, true)) {
-      msgs.push({ code: E.UNKNOWN_COMMAND });
-    } else if (token(ctx, E.OUT_OF_MEMORY, true)) {
-      msgs.push({ code: E.OUT_OF_MEMORY });
-    } else if (token(ctx, E.INTERNAL_ERROR, true)) {
-      msgs.push({ code: E.INTERNAL_ERROR });
-    } else if (token(ctx, S.PAUSED, true)) {
-      msgs.push({ code: S.PAUSED });
-    } else if (token(ctx, S.TOUCHED, true)) {
-      msgs.push({ code: S.TOUCHED });
+      msgs.push({ code: M.KICKED, value: res.value } as Kicked); // casting to guard from future changes
+    } else if (token(ctx, M.RELEASED, true)) {
+      msgs.push({ code: M.RELEASED });
+    } else if (token(ctx, M.DRAINING, true)) {
+      msgs.push({ code: M.DRAINING });
+    } else if (token(ctx, M.EXPECTED_CRLF, true)) {
+      msgs.push({ code: M.EXPECTED_CRLF });
+    } else if (token(ctx, M.JOB_TOO_BIG, true)) {
+      msgs.push({ code: M.JOB_TOO_BIG });
+    } else if (token(ctx, M.DELETED, true)) {
+      msgs.push({ code: M.DELETED });
+    } else if (token(ctx, M.NOT_FOUND, true)) {
+      msgs.push({ code: M.NOT_FOUND });
+    } else if (token(ctx, M.DEADLINE_SOON, true)) {
+      msgs.push({ code: M.DEADLINE_SOON });
+    } else if (token(ctx, M.TIMED_OUT, true)) {
+      msgs.push({ code: M.TIMED_OUT });
+    } else if (token(ctx, M.NOT_IGNORED, true)) {
+      msgs.push({ code: M.NOT_IGNORED });
+    } else if (token(ctx, M.BAD_FORMAT, true)) {
+      msgs.push({ code: M.BAD_FORMAT });
+    } else if (token(ctx, M.UNKNOWN_COMMAND, true)) {
+      msgs.push({ code: M.UNKNOWN_COMMAND });
+    } else if (token(ctx, M.OUT_OF_MEMORY, true)) {
+      msgs.push({ code: M.OUT_OF_MEMORY });
+    } else if (token(ctx, M.INTERNAL_ERROR, true)) {
+      msgs.push({ code: M.INTERNAL_ERROR });
+    } else if (token(ctx, M.PAUSED, true)) {
+      msgs.push({ code: M.PAUSED });
+    } else if (token(ctx, M.TOUCHED, true)) {
+      msgs.push({ code: M.TOUCHED });
     } else {
       return ctx.offset;
     }
@@ -109,7 +102,7 @@ export function parse(buf: Buffer, msgs: Msg[]): number {
 
 function found(ctx: ParseContext, res: Partial<R<[number, Buffer]>>): res is R<[number, Buffer]> {
   const start = ctx.offset;
-  if (token(ctx, S.FOUND)) {
+  if (token(ctx, M.FOUND)) {
     if (space(ctx)) {
       const id: Partial<R<number>> = {};
       if (integer(ctx, id)) {
@@ -134,7 +127,7 @@ function found(ctx: ParseContext, res: Partial<R<[number, Buffer]>>): res is R<[
 
 function kicked(ctx: ParseContext, res: Partial<R<number | undefined>>): res is R<number | undefined> {
   const start = ctx.offset;
-  if (token(ctx, S.KICKED)) {
+  if (token(ctx, M.KICKED)) {
     if (space(ctx)) {
       if (integer(ctx, res)) {
         if (crlf(ctx)) {
@@ -152,7 +145,7 @@ function kicked(ctx: ParseContext, res: Partial<R<number | undefined>>): res is 
 
 function ok(ctx: ParseContext, res: Partial<R<Buffer>>): res is R<Buffer> {
   const start = ctx.offset;
-  if (token(ctx, S.OK)) {
+  if (token(ctx, M.OK)) {
     if (space(ctx)) {
       const len: Partial<R<number>> = {};
       // <bytes>
@@ -173,7 +166,7 @@ function ok(ctx: ParseContext, res: Partial<R<Buffer>>): res is R<Buffer> {
 
 function inserted(ctx: ParseContext, res: Partial<R<number>>): res is R<number> {
   const start = ctx.offset;
-  if (token(ctx, S.INSERTED)) {
+  if (token(ctx, M.INSERTED)) {
     if (space(ctx)) {
       if (integer(ctx, res)) {
         if (crlf(ctx)) {
@@ -186,9 +179,28 @@ function inserted(ctx: ParseContext, res: Partial<R<number>>): res is R<number> 
   return false;
 }
 
+function buried(ctx: ParseContext, res: Partial<R<number | undefined>>): res is R<number | undefined> {
+  const start = ctx.offset;
+  if (token(ctx, M.BURIED)) {
+    if (space(ctx)) {
+      if (integer(ctx, res)) {
+        if (crlf(ctx)) {
+          return true;
+        }
+      }
+    } else {
+      if (crlf(ctx)) {
+        return true;
+      }
+    }
+  }
+  ctx.offset = start;
+  return false;
+}
+
 function using(ctx: ParseContext, res: Partial<R<string>>): res is R<string> {
   const start = ctx.offset;
-  if (token(ctx, S.USING)) {
+  if (token(ctx, M.USING)) {
     if (space(ctx)) {
       if (string(ctx, 13, res)) {
         // 13: '\r'
@@ -204,7 +216,7 @@ function using(ctx: ParseContext, res: Partial<R<string>>): res is R<string> {
 
 function watching(ctx: ParseContext, res: Partial<R<number>>): res is R<number> {
   const start = ctx.offset;
-  if (token(ctx, S.WATCHING)) {
+  if (token(ctx, M.WATCHING)) {
     if (space(ctx)) {
       if (integer(ctx, res)) {
         if (crlf(ctx)) {
@@ -219,7 +231,7 @@ function watching(ctx: ParseContext, res: Partial<R<number>>): res is R<number> 
 
 function reserved(ctx: ParseContext, res: Partial<R<[number, Buffer]>>): res is R<[number, Buffer]> {
   const start = ctx.offset;
-  if (token(ctx, S.RESERVED)) {
+  if (token(ctx, M.RESERVED)) {
     if (space(ctx)) {
       const id: Partial<R<number>> = {};
       if (integer(ctx, id)) {

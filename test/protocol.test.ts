@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { gzipSync, gunzipSync } from 'zlib';
-import { parse, S, E } from '../src/protocol';
-import { Reserved, Ok, Watching, Found, Kicked, Msg } from '../src/types';
+import { parse, M } from '../src/protocol';
+import { Reserved, Ok, Watching, Found, Kicked, Msg, Buried } from '../src/types';
 import { yamlList } from '../src/yaml-parser';
 
 describe('protocol', () => {
@@ -23,7 +23,7 @@ describe('protocol', () => {
       const buffer = Buffer.from('INSERTED 42\r\n');
       const bRead = parse(buffer, msgs);
       expect(bRead).to.equal(buffer.length);
-      expect(msgs[0]).to.eql({ code: S.INSERTED, value: 42 });
+      expect(msgs[0]).to.eql({ code: M.INSERTED, value: 42 });
     });
 
     it('multiple', () => {
@@ -31,9 +31,9 @@ describe('protocol', () => {
       const buffer = Buffer.from('INSERTED 42\r\nINSERTED 43\r\nINSERTED 44\r\n');
       const bRead = parse(buffer, msgs);
       expect(bRead).to.equal(buffer.length);
-      expect(msgs[0]).to.eql({ code: S.INSERTED, value: 42 });
-      expect(msgs[1]).to.eql({ code: S.INSERTED, value: 43 });
-      expect(msgs[2]).to.eql({ code: S.INSERTED, value: 44 });
+      expect(msgs[0]).to.eql({ code: M.INSERTED, value: 42 });
+      expect(msgs[1]).to.eql({ code: M.INSERTED, value: 43 });
+      expect(msgs[2]).to.eql({ code: M.INSERTED, value: 44 });
     });
   });
 
@@ -43,7 +43,7 @@ describe('protocol', () => {
       const buffer = Buffer.from('USING foo\r\n');
       const bRead = parse(buffer, msgs);
       expect(bRead).to.equal(buffer.length);
-      expect(msgs[0]).to.eql({ code: S.USING, value: 'foo' });
+      expect(msgs[0]).to.eql({ code: M.USING, value: 'foo' });
     });
 
     it('multiple', () => {
@@ -52,9 +52,9 @@ describe('protocol', () => {
       const bRead = parse(buffer, msgs);
       expect(bRead).to.equal(buffer.length);
       expect(msgs.length).to.equal(3);
-      expect(msgs[0]).to.eql({ code: S.USING, value: 'foo' });
-      expect(msgs[1]).to.eql({ code: S.USING, value: 'bar' });
-      expect(msgs[2]).to.eql({ code: S.USING, value: 'bloop' });
+      expect(msgs[0]).to.eql({ code: M.USING, value: 'foo' });
+      expect(msgs[1]).to.eql({ code: M.USING, value: 'bar' });
+      expect(msgs[2]).to.eql({ code: M.USING, value: 'bloop' });
     });
   });
 
@@ -65,7 +65,7 @@ describe('protocol', () => {
       const bRead = parse(buffer, msgs);
       expect(bRead).to.equal(buffer.length);
       expect(msgs[0]).to.eql({
-        code: S.RESERVED,
+        code: M.RESERVED,
         value: [42, Buffer.from('123456')],
       });
     });
@@ -81,7 +81,7 @@ describe('protocol', () => {
       const bRead = parse(buffer, msgs);
       expect(bRead).to.equal(buffer.length);
       const res = msgs[0] as Reserved;
-      expect(res.code).to.equal(S.RESERVED);
+      expect(res.code).to.equal(M.RESERVED);
       expect(res.value[0]).to.equal(42);
       expect(res.value[1]).to.eql(buf);
       expect(gunzipSync(res.value[1]).toString()).to.equal('Hello World');
@@ -107,7 +107,7 @@ describe('protocol', () => {
     const bRead = parse(buffer, msgs);
     expect(bRead).to.equal(buffer.length);
     const res = msgs[0] as Ok;
-    expect(res.code).to.equal(S.OK);
+    expect(res.code).to.equal(M.OK);
     expect(yamlList(res.value)).to.eql(['default', 'foo', 'bar', 'baz']);
   });
 
@@ -123,7 +123,7 @@ describe('protocol', () => {
     const bRead = parse(buffer, msgs);
     expect(bRead).to.equal(buffer.length);
     const res = msgs[0] as Found;
-    expect(res.code).to.equal(S.FOUND);
+    expect(res.code).to.equal(M.FOUND);
     expect(res.value[0]).to.equal(id);
     expect(res.value[1]).to.eql(payload);
   });
@@ -134,7 +134,7 @@ describe('protocol', () => {
     const bRead = parse(buffer, msgs);
     expect(bRead).to.equal(buffer.length);
     const res = msgs[0] as Kicked;
-    expect(res.code).to.equal(S.KICKED);
+    expect(res.code).to.equal(M.KICKED);
     expect(res.value).to.be.undefined;
   });
 
@@ -145,7 +145,7 @@ describe('protocol', () => {
     const bRead = parse(buffer, msgs);
     expect(bRead).to.equal(buffer.length);
     const res = msgs[0] as Kicked;
-    expect(res.code).to.equal(S.KICKED);
+    expect(res.code).to.equal(M.KICKED);
     expect(res.value).to.equal(id);
   });
 
@@ -158,7 +158,7 @@ describe('protocol', () => {
     const buffer = Buffer.from('JOB_TOO_BIG\r\n');
     const bRead = parse(buffer, msgs);
     expect(bRead).to.equal(buffer.length);
-    expect(msgs[0].code).to.equal(E.JOB_TOO_BIG);
+    expect(msgs[0].code).to.equal(M.JOB_TOO_BIG);
   });
 
   it('BURIED', () => {
@@ -166,7 +166,16 @@ describe('protocol', () => {
     const buffer = Buffer.from('BURIED\r\n');
     const bRead = parse(buffer, msgs);
     expect(bRead).to.equal(buffer.length);
-    expect(msgs[0].code).to.equal(E.BURIED);
+    expect(msgs[0].code).to.equal(M.BURIED);
+  });
+
+  it('BURIED 42', () => {
+    const msgs: Msg[] = [];
+    const buffer = Buffer.from('BURIED 42\r\n');
+    const bRead = parse(buffer, msgs);
+    expect(bRead).to.equal(buffer.length);
+    expect(msgs[0].code).to.equal(M.BURIED);
+    expect((msgs[0] as Buried).value).to.equal(42);
   });
 
   it('DRAINING', () => {
@@ -174,7 +183,7 @@ describe('protocol', () => {
     const buffer = Buffer.from('DRAINING\r\n');
     const bRead = parse(buffer, msgs);
     expect(bRead).to.equal(buffer.length);
-    expect(msgs[0].code).to.equal(E.DRAINING);
+    expect(msgs[0].code).to.equal(M.DRAINING);
   });
 
   it('EXPECTED_CRLF', () => {
@@ -182,7 +191,7 @@ describe('protocol', () => {
     const buffer = Buffer.from('EXPECTED_CRLF\r\n');
     const bRead = parse(buffer, msgs);
     expect(bRead).to.equal(buffer.length);
-    expect(msgs[0].code).to.equal(E.EXPECTED_CRLF);
+    expect(msgs[0].code).to.equal(M.EXPECTED_CRLF);
   });
 
   it('NOT_FOUND', () => {
@@ -190,7 +199,7 @@ describe('protocol', () => {
     const buffer = Buffer.from('NOT_FOUND\r\n');
     const bRead = parse(buffer, msgs);
     expect(bRead).to.equal(buffer.length);
-    expect(msgs[0].code).to.equal(E.NOT_FOUND);
+    expect(msgs[0].code).to.equal(M.NOT_FOUND);
   });
   
   it('DELETED', () => {
@@ -198,7 +207,7 @@ describe('protocol', () => {
     const buffer = Buffer.from('DELETED\r\n');
     const bRead = parse(buffer, msgs);
     expect(bRead).to.equal(buffer.length);
-    expect(msgs[0].code).to.equal(S.DELETED);
+    expect(msgs[0].code).to.equal(M.DELETED);
   });
 
   it('RELEASED', () => {
@@ -206,7 +215,7 @@ describe('protocol', () => {
     const buffer = Buffer.from('RELEASED\r\n');
     const bRead = parse(buffer, msgs);
     expect(bRead).to.equal(buffer.length);
-    expect(msgs[0].code).to.equal(S.RELEASED);
+    expect(msgs[0].code).to.equal(M.RELEASED);
   });
 
   it('DEADLINE_SOON', () => {
@@ -214,7 +223,7 @@ describe('protocol', () => {
     const buffer = Buffer.from('DEADLINE_SOON\r\n');
     const bRead = parse(buffer, msgs);
     expect(bRead).to.equal(buffer.length);
-    expect(msgs[0].code).to.equal(E.DEADLINE_SOON);
+    expect(msgs[0].code).to.equal(M.DEADLINE_SOON);
   });
 
   it('NOT_IGNORED', () => {
@@ -222,7 +231,7 @@ describe('protocol', () => {
     const buffer = Buffer.from('NOT_IGNORED\r\n');
     const bRead = parse(buffer, msgs);
     expect(bRead).to.equal(buffer.length);
-    expect(msgs[0].code).to.equal(E.NOT_IGNORED);
+    expect(msgs[0].code).to.equal(M.NOT_IGNORED);
   });
 
   it('TIMED_OUT', () => {
@@ -230,7 +239,7 @@ describe('protocol', () => {
     const buffer = Buffer.from('TIMED_OUT\r\n');
     const bRead = parse(buffer, msgs);
     expect(bRead).to.equal(buffer.length);
-    expect(msgs[0].code).to.equal(E.TIMED_OUT);
+    expect(msgs[0].code).to.equal(M.TIMED_OUT);
   });
 
   it('WATCHING', () => {
@@ -239,7 +248,7 @@ describe('protocol', () => {
     const bRead = parse(buffer, msgs);
     expect(bRead).to.equal(buffer.length);
     const res = msgs[0] as Watching;
-    expect(res.code).to.equal(S.WATCHING);
+    expect(res.code).to.equal(M.WATCHING);
     expect(res.value).to.equal(42);
   });
 });

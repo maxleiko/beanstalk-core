@@ -1,8 +1,8 @@
-import { S, E } from './protocol';
+import { M } from './protocol';
 
 export interface IPendingRequest {
-  successCode: S;
-  errorCodes: E[];
+  successCode: M;
+  errorCodes: M[];
 }
 
 export type ParseContext = { buf: Buffer; offset: number };
