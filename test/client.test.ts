@@ -11,9 +11,7 @@ describe('client', () => {
     client = new BeanstalkClient();
     await client.connect(HOST, PORT);
   });
-  afterEach(async () => {
-    await client.quit();
-  });
+  afterEach(() => client.quit());
 
   it('put', async () => {
     await client.connect(HOST, PORT);

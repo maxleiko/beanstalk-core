@@ -9,10 +9,12 @@ const PUT_DEFAULT: IPutOptions = { priority: 0, delay: 0, ttr: 60 };
 const REL_DEFAULT: IReleaseOptions = { priority: 0, delay: 0 };
 
 export class BeanstalkClient {
+  private _connected: boolean;
   private _socket: Socket;
   private _pendingRequests: EventEmitter[];
 
   constructor() {
+    this._connected = false;
     this._socket = new Socket();
     this._pendingRequests = [];
 
@@ -48,21 +50,38 @@ export class BeanstalkClient {
    */
   async connect(host = 'localhost', port = 11300, timeout = -1): Promise<void> {
     return new Promise((resolve, reject) => {
-      const errorHandler = (err: Error) => reject(err);
-      const timeoutHandler = () => this._socket.destroy(new Error('Connection timeout'));
+      const connectHandler = () => {
+        // when connected: remove error/timeout handlers
+        this._socket.off('error', errorHandler);
+        this._socket.off('timeout', timeoutHandler);
+
+        // set inner state
+        this._connected = true;
+
+        resolve();
+      };
+      const errorHandler = (err: Error) => {
+        // when an error occurs: remove connect/timeout handlers
+        this._socket.off('connect', connectHandler);
+        this._socket.off('timeout', timeoutHandler);
+
+        // set inner state
+        this._connected = false;
+
+        reject(err);
+      };
+      const timeoutHandler = () => {
+        // when connection times out: trigger error
+        this._socket.destroy(new Error('Connection timeout'));
+      };
 
       if (timeout > 0) {
         this._socket.setTimeout(timeout);
         this._socket.once('timeout', timeoutHandler);
       }
+      this._socket.once('connect', connectHandler);
       this._socket.once('error', errorHandler);
-      this._socket.connect(port, host, () => {
-        // when connected: remove error/timeout handlers
-        this._socket.off('timeout', timeoutHandler);
-        this._socket.off('error', errorHandler);
-
-        resolve();
-      });
+      this._socket.connect(port, host);
     });
   }
 
@@ -71,16 +90,10 @@ export class BeanstalkClient {
    *
    *     quit\r\n
    */
-  quit(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this._socket.write(`quit\r\n`, (err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      });
-    });
+  quit(): void {
+    this._socket.write(`quit\r\n`);
+    this._socket.destroy();
+    this._connected = false;
   }
 
   /**
@@ -841,6 +854,10 @@ export class BeanstalkClient {
   }
 
   private async _send(cmd: Buffer): Promise<Msg> {
+    if (!this._connected) {
+      throw new Error(`Beanstalk client is not connected to a server.`);
+    }
+
     const emitter = new EventEmitter();
 
     const resultPromise = new Promise<Msg>((resolve, reject) => {
@@ -853,7 +870,7 @@ export class BeanstalkClient {
     // FIXME consider adding a global timeout option to prevent infinite hanging on answers
     // or maybe we want to hang indefinitely?
     try {
-      await new Promise((r, e) => this._socket.write(cmd, (err) => (err ? e(err) : r())));
+      this._socket.write(cmd);
     } catch (err) {
       // if an error occured while writing to socket then no response will ever
       // be received, so the pending request will never dequeue: remove it

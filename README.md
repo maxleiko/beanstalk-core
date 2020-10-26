@@ -6,6 +6,9 @@
 
 A 0 dependency, full-featured, battle-tested beanstalk client library.  
 
+> **NOTE**  
+> While version is lower than `v1.0.0` the API might change slightly
+
 ### Installation
 ```sh
 yarn add @beanstalk/core
@@ -26,7 +29,7 @@ async function main() {
   const id = await client.put('Hello World');
   console.log(`Job created with '${id}'`);
 
-  await client.quit();
+  client.quit();
 }
 
 main().catch((err) => {
@@ -56,7 +59,7 @@ async function main() {
     process.stdout.write(payload, (err) => err ? reject(err) : resolve());
   });
 
-  await client.quit();
+  client.quit();
 }
 
 main().catch((err) => {
