@@ -5,3 +5,5 @@ export class BeanstalkError extends Error {
     super(`[${code}] ${msg}`);
   }
 }
+
+export class BeanstalkClientError extends Error {}

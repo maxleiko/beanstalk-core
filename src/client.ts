@@ -18,26 +18,22 @@ export class BeanstalkClient {
     this._socket = new Socket();
     this._pendingRequests = [];
 
-    const chunks: Uint8Array[] = [];
-    const messages: Msg[] = [];
     this._socket.on('data', (chunk) => {
-      chunks.push(chunk);
-
-      const buffer = Buffer.concat(chunks);
-      const bRead = parse(buffer, messages);
-      if (bRead > 0 && bRead === buffer.length) {
-        for (const msg of messages) {
-          const emitter = this._pendingRequests[0];
-          if (emitter) {
-            emitter.emit('resolve', msg);
-            this._pendingRequests.shift();
-          } else {
-            console.error(`@beanstalk/core lost msg [code=${msg.code}]`);
-          }
+      try {
+        const msg = parse(chunk);
+        const emitter = this._pendingRequests[0];
+        if (emitter) {
+          emitter.emit('resolve', msg);
+          this._pendingRequests.shift();
+        } else {
+          console.error(`@beanstalk/core lost msg [code=${msg.code}]`);
         }
-        // clean-up
-        chunks.length = 0;
-        messages.length = 0;
+      } catch (err) {
+        const emitter = this._pendingRequests[0];
+        if (emitter) {
+          emitter.emit('reject', err);
+          this._pendingRequests.shift();
+        }
       }
     });
   }

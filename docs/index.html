@@ -70,6 +70,9 @@
 				<p><img src="https://img.shields.io/github/workflow/status/maxleiko/beanstalk-core/build" alt="build"> | <img src="https://img.shields.io/npm/v/@beanstalk/core" alt="npm"></p>
 				<p><a href="https://maxleiko.github.io/beanstalk-core/">Documentation</a></p>
 				<p>A 0 dependency, full-featured, battle-tested beanstalk client library.  </p>
+				<blockquote>
+					<p><strong>NOTE</strong><br>While version is lower than <code>v1.0.0</code> the API might change slightly</p>
+				</blockquote>
 				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
 					<h3>Installation</h3>
 				</a>
@@ -92,7 +95,7 @@
   <span class="hljs-keyword">const</span> id = <span class="hljs-keyword">await</span> client.put(<span class="hljs-string">&#x27;Hello World&#x27;</span>);
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Job created with &#x27;<span class="hljs-subst">${id}</span>&#x27;`</span>);
 
-  <span class="hljs-keyword">await</span> client.quit();
+  client.quit();
 }
 
 main().catch(<span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> {
@@ -121,7 +124,7 @@ main().catch(<span class="hljs-function">(<span class="hljs-params">err</span>) 
     process.stdout.write(payload, <span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> err ? reject(err) : resolve());
   });
 
-  <span class="hljs-keyword">await</span> client.quit();
+  client.quit();
 }
 
 main().catch(<span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> {

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IPendingRequest | @beanstalk/core</title>
+	<title>BeanstalkClientError | @beanstalk/core</title>
 	<meta name="description" content="Documentation for @beanstalk/core">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_internal_types_.html">&quot;internal_types&quot;</a>
+					<a href="../modules/_error_.html">&quot;error&quot;</a>
 				</li>
 				<li>
-					<a href="_internal_types_.ipendingrequest.html">IPendingRequest</a>
+					<a href="_error_.beanstalkclienterror.html">BeanstalkClientError</a>
 				</li>
 			</ul>
-			<h1>Interface IPendingRequest</h1>
+			<h1>Class BeanstalkClientError</h1>
 		</div>
 	</div>
 </header>
@@ -73,7 +73,12 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">IPendingRequest</span>
+						<a href="_error_.beanstalkerror.html#error" class="tsd-signature-type">Error</a>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">BeanstalkClientError</span>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -84,8 +89,10 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_internal_types_.ipendingrequest.html#errorcodes" class="tsd-kind-icon">error<wbr>Codes</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_internal_types_.ipendingrequest.html#successcode" class="tsd-kind-icon">success<wbr>Code</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_error_.beanstalkclienterror.html#message" class="tsd-kind-icon">message</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_error_.beanstalkclienterror.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_error_.beanstalkclienterror.html#stack" class="tsd-kind-icon">stack</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_error_.beanstalkclienterror.html#error" class="tsd-kind-icon">Error</a></li>
 							</ul>
 						</section>
 					</div>
@@ -93,23 +100,46 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="errorcodes" class="tsd-anchor"></a>
-					<h3>error<wbr>Codes</h3>
-					<div class="tsd-signature tsd-kind-icon">error<wbr>Codes<span class="tsd-signature-symbol">:</span> <a href="../enums/_protocol_.m.html" class="tsd-signature-type">M</a><span class="tsd-signature-symbol">[]</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="message" class="tsd-anchor"></a>
+					<h3>message</h3>
+					<div class="tsd-signature tsd-kind-icon">message<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="_error_.beanstalkerror.html">BeanstalkError</a>.<a href="_error_.beanstalkerror.html#message">message</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/f02e8e8/src/internal_types.ts#L5">src/internal_types.ts:5</a></li>
+							<li>Defined in node_modules/typescript/lib/lib.es5.d.ts:974</li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="successcode" class="tsd-anchor"></a>
-					<h3>success<wbr>Code</h3>
-					<div class="tsd-signature tsd-kind-icon">success<wbr>Code<span class="tsd-signature-symbol">:</span> <a href="../enums/_protocol_.m.html" class="tsd-signature-type">M</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="name" class="tsd-anchor"></a>
+					<h3>name</h3>
+					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="_error_.beanstalkerror.html">BeanstalkError</a>.<a href="_error_.beanstalkerror.html#name">name</a></p>
+						<ul>
+							<li>Defined in node_modules/typescript/lib/lib.es5.d.ts:973</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="stack" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> stack</h3>
+					<div class="tsd-signature tsd-kind-icon">stack<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="_error_.beanstalkerror.html">BeanstalkError</a>.<a href="_error_.beanstalkerror.html#stack">stack</a></p>
+						<ul>
+							<li>Defined in node_modules/typescript/lib/lib.es5.d.ts:975</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="error" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> Error</h3>
+					<div class="tsd-signature tsd-kind-icon">Error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ErrorConstructor</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/maxleiko/beanstalk-core/blob/f02e8e8/src/internal_types.ts#L4">src/internal_types.ts:4</a></li>
+							<li>Defined in node_modules/typescript/lib/lib.es5.d.ts:984</li>
 						</ul>
 					</aside>
 				</section>
@@ -124,13 +154,13 @@
 					<li class=" tsd-kind-module">
 						<a href="../modules/_client_.html">&quot;client&quot;</a>
 					</li>
-					<li class=" tsd-kind-module">
+					<li class="current tsd-kind-module">
 						<a href="../modules/_error_.html">&quot;error&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="../modules/_index_.html">&quot;index&quot;</a>
 					</li>
-					<li class="current tsd-kind-module">
+					<li class=" tsd-kind-module">
 						<a href="../modules/_internal_types_.html">&quot;internal_<wbr>types&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -151,24 +181,27 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-module">
-						<a href="_internal_types_.ipendingrequest.html" class="tsd-kind-icon">IPending<wbr>Request</a>
+					<li class="current tsd-kind-class tsd-parent-kind-module">
+						<a href="_error_.beanstalkclienterror.html" class="tsd-kind-icon">Beanstalk<wbr>Client<wbr>Error</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_internal_types_.ipendingrequest.html#errorcodes" class="tsd-kind-icon">error<wbr>Codes</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="_error_.beanstalkclienterror.html#message" class="tsd-kind-icon">message</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_internal_types_.ipendingrequest.html#successcode" class="tsd-kind-icon">success<wbr>Code</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="_error_.beanstalkclienterror.html#name" class="tsd-kind-icon">name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="_error_.beanstalkclienterror.html#stack" class="tsd-kind-icon">stack</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="_error_.beanstalkclienterror.html#error" class="tsd-kind-icon">Error</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/_internal_types_.html#parsecontext" class="tsd-kind-icon">Parse<wbr>Context</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
-						<a href="../modules/_internal_types_.html#r" class="tsd-kind-icon">R</a>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="_error_.beanstalkerror.html" class="tsd-kind-icon">Beanstalk<wbr>Error</a>
 					</li>
 				</ul>
 			</nav>
@@ -186,14 +219,19 @@
 				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-			</ul>
-			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
 			</ul>
 		</div>
 	</div>
