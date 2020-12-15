@@ -261,6 +261,10 @@ function reserved(ctx: ParseContext, res: Partial<R<[number, Buffer]>>): res is 
                 ctx.offset += len.value; // skip bytes
                 if (crlf(ctx)) {
                   return true;
+                } else if (ctx.buf.length - ctx.offset === 2) {
+                  // resilience / dirty hack
+                  ctx.offset += 2;
+                  return true;
                 }
               }
             }
