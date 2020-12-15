@@ -6,4 +6,8 @@ export class BeanstalkError extends Error {
   }
 }
 
-export class BeanstalkClientError extends Error {}
+export class BeanstalkClientError extends Error {
+  constructor(msg: string, readonly data?: Record<string, string | number>) {
+    super(msg);
+  }
+}

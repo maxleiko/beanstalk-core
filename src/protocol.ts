@@ -46,7 +46,6 @@ export function parse(buf: Buffer): Msg {
   const ctx: ParseContext = { buf, offset: 0 };
   const res: Partial<R> = {};
 
-  while (ctx.offset < ctx.buf.length) {
     if (inserted(ctx, res)) {
       return { code: M.INSERTED, value: res.value } as Inserted; // casting to guard from future changes
     } else if (buried(ctx, res)) {
@@ -94,7 +93,6 @@ export function parse(buf: Buffer): Msg {
     } else if (token(ctx, M.TOUCHED, true)) {
       return { code: M.TOUCHED };
     }
-  }
 
   throw new BeanstalkClientError('Invalid beanstalkd response');
 }
@@ -230,9 +228,9 @@ function watching(ctx: ParseContext, res: Partial<R<number>>): res is R<number> 
 
 function reserved(ctx: ParseContext, res: Partial<R<[number, Buffer]>>): res is R<[number, Buffer]> {
   const start = ctx.offset;
+  const id: Partial<R<number>> = {};
   if (token(ctx, M.RESERVED)) {
     if (space(ctx)) {
-      const id: Partial<R<number>> = {};
       if (integer(ctx, id)) {
         // <id>
         if (space(ctx)) {
@@ -250,6 +248,10 @@ function reserved(ctx: ParseContext, res: Partial<R<[number, Buffer]>>): res is 
         }
       }
     }
+    if (id.value) {
+      throw new BeanstalkClientError('Malformed RESERVED message', { id: id.value });
+    }
+    throw new BeanstalkClientError('Malformed RESERVED message');
   }
   ctx.offset = start;
   return false;
