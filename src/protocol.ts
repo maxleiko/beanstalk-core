@@ -1,7 +1,6 @@
 import { ParseContext, R } from './internal_types';
 import { Msg, Inserted, Using, Reserved, Ok, Watching, Found, Kicked, Buried } from './types';
 import { space, integer, crlf, string } from './parse-utils';
-import { BeanstalkClientError } from './error';
 
 /**
  * Messages
@@ -36,65 +35,82 @@ export enum M {
 /**
  * @param buf a buffer containing Beanstalkd response messages
  * @param msgs fills this array with the parsed messages
- * @returns the number of bytes read
  */
-export function parse(buf: Buffer): Msg {
-  if (buf.length === 0) {
-    throw new BeanstalkClientError('Empty buffer');
-  }
-
-  const ctx: ParseContext = { buf, offset: 0 };
+export function parse(ctx: ParseContext, msgs: Msg[]): void {
   const res: Partial<R> = {};
 
-    if (inserted(ctx, res)) {
-      return { code: M.INSERTED, value: res.value } as Inserted; // casting to guard from future changes
-    } else if (buried(ctx, res)) {
-      return { code: M.BURIED, value: res.value } as Buried; // casting to guard from future changes
-    } else if (using(ctx, res)) {
-      return { code: M.USING, value: res.value } as Using; // casting to guard from future changes
-    } else if (reserved(ctx, res)) {
-      return { code: M.RESERVED, value: res.value } as Reserved; // casting to guard from future changes
-    } else if (ok(ctx, res)) {
-      return { code: M.OK, value: res.value } as Ok; // casting to guard from future changes
-    } else if (watching(ctx, res)) {
-      return { code: M.WATCHING, value: res.value } as Watching; // casting to guard from future changes
-    } else if (found(ctx, res)) {
-      return { code: M.FOUND, value: res.value } as Found; // casting to guard from future changes
-    } else if (kicked(ctx, res)) {
-      return { code: M.KICKED, value: res.value } as Kicked; // casting to guard from future changes
-    } else if (token(ctx, M.RELEASED, true)) {
-      return { code: M.RELEASED };
-    } else if (token(ctx, M.DRAINING, true)) {
-      return { code: M.DRAINING };
-    } else if (token(ctx, M.EXPECTED_CRLF, true)) {
-      return { code: M.EXPECTED_CRLF };
-    } else if (token(ctx, M.JOB_TOO_BIG, true)) {
-      return { code: M.JOB_TOO_BIG };
-    } else if (token(ctx, M.DELETED, true)) {
-      return { code: M.DELETED };
-    } else if (token(ctx, M.NOT_FOUND, true)) {
-      return { code: M.NOT_FOUND };
-    } else if (token(ctx, M.DEADLINE_SOON, true)) {
-      return { code: M.DEADLINE_SOON };
-    } else if (token(ctx, M.TIMED_OUT, true)) {
-      return { code: M.TIMED_OUT };
-    } else if (token(ctx, M.NOT_IGNORED, true)) {
-      return { code: M.NOT_IGNORED };
-    } else if (token(ctx, M.BAD_FORMAT, true)) {
-      return { code: M.BAD_FORMAT };
-    } else if (token(ctx, M.UNKNOWN_COMMAND, true)) {
-      return { code: M.UNKNOWN_COMMAND };
-    } else if (token(ctx, M.OUT_OF_MEMORY, true)) {
-      return { code: M.OUT_OF_MEMORY };
-    } else if (token(ctx, M.INTERNAL_ERROR, true)) {
-      return { code: M.INTERNAL_ERROR };
-    } else if (token(ctx, M.PAUSED, true)) {
-      return { code: M.PAUSED };
-    } else if (token(ctx, M.TOUCHED, true)) {
-      return { code: M.TOUCHED };
-    }
+  if (inserted(ctx, res)) {
+    msgs.push({ code: M.INSERTED, value: res.value } as Inserted); // casting to guard from future changes
+    ctx.update();
+  } else if (buried(ctx, res)) {
+    msgs.push({ code: M.BURIED, value: res.value } as Buried); // casting to guard from future changes
+    ctx.update();
+  } else if (using(ctx, res)) {
+    msgs.push({ code: M.USING, value: res.value } as Using); // casting to guard from future changes
+    ctx.update();
+  } else if (reserved(ctx, res)) {
+    msgs.push({ code: M.RESERVED, value: res.value } as Reserved); // casting to guard from future changes
+    ctx.update();
+  } else if (ok(ctx, res)) {
+    msgs.push({ code: M.OK, value: res.value } as Ok); // casting to guard from future changes
+    ctx.update();
+  } else if (watching(ctx, res)) {
+    msgs.push({ code: M.WATCHING, value: res.value } as Watching); // casting to guard from future changes
+    ctx.update();
+  } else if (found(ctx, res)) {
+    msgs.push({ code: M.FOUND, value: res.value } as Found); // casting to guard from future changes
+    ctx.update();
+  } else if (kicked(ctx, res)) {
+    msgs.push({ code: M.KICKED, value: res.value } as Kicked); // casting to guard from future changes
+    ctx.update();
+  } else if (token(ctx, M.RELEASED, true)) {
+    msgs.push({ code: M.RELEASED });
+    ctx.update();
+  } else if (token(ctx, M.DRAINING, true)) {
+    msgs.push({ code: M.DRAINING });
+    ctx.update();
+  } else if (token(ctx, M.EXPECTED_CRLF, true)) {
+    msgs.push({ code: M.EXPECTED_CRLF });
+    ctx.update();
+  } else if (token(ctx, M.JOB_TOO_BIG, true)) {
+    msgs.push({ code: M.JOB_TOO_BIG });
+    ctx.update();
+  } else if (token(ctx, M.DELETED, true)) {
+    msgs.push({ code: M.DELETED });
+    ctx.update();
+  } else if (token(ctx, M.NOT_FOUND, true)) {
+    msgs.push({ code: M.NOT_FOUND });
+    ctx.update();
+  } else if (token(ctx, M.DEADLINE_SOON, true)) {
+    msgs.push({ code: M.DEADLINE_SOON });
+    ctx.update();
+  } else if (token(ctx, M.TIMED_OUT, true)) {
+    msgs.push({ code: M.TIMED_OUT });
+    ctx.update();
+  } else if (token(ctx, M.NOT_IGNORED, true)) {
+    msgs.push({ code: M.NOT_IGNORED });
+    ctx.update();
+  } else if (token(ctx, M.BAD_FORMAT, true)) {
+    msgs.push({ code: M.BAD_FORMAT });
+    ctx.update();
+  } else if (token(ctx, M.UNKNOWN_COMMAND, true)) {
+    msgs.push({ code: M.UNKNOWN_COMMAND });
+    ctx.update();
+  } else if (token(ctx, M.OUT_OF_MEMORY, true)) {
+    msgs.push({ code: M.OUT_OF_MEMORY });
+    ctx.update();
+  } else if (token(ctx, M.INTERNAL_ERROR, true)) {
+    msgs.push({ code: M.INTERNAL_ERROR });
+    ctx.update();
+  } else if (token(ctx, M.PAUSED, true)) {
+    msgs.push({ code: M.PAUSED });
+    ctx.update();
+  } else if (token(ctx, M.TOUCHED, true)) {
+    msgs.push({ code: M.TOUCHED });
+    ctx.update();
+  }
 
-  throw new BeanstalkClientError('Invalid beanstalkd response');
+  ctx.offset = 0;
 }
 
 function found(ctx: ParseContext, res: Partial<R<[number, Buffer]>>): res is R<[number, Buffer]> {
@@ -107,10 +123,12 @@ function found(ctx: ParseContext, res: Partial<R<[number, Buffer]>>): res is R<[
           const len: Partial<R<number>> = {};
           if (integer(ctx, len)) {
             if (crlf(ctx)) {
-              res.value = [id.value, ctx.buf.slice(ctx.offset, ctx.offset + len.value)];
-              ctx.offset += len.value; // skip bytes len
-              if (crlf(ctx)) {
-                return true;
+              if (ctx.buf.length - ctx.offset >= len.value) {
+                res.value = [id.value, ctx.buf.slice(ctx.offset, ctx.offset + len.value)];
+                ctx.offset += len.value; // skip bytes len
+                if (crlf(ctx)) {
+                  return true;
+                }
               }
             }
           }
@@ -148,10 +166,12 @@ function ok(ctx: ParseContext, res: Partial<R<Buffer>>): res is R<Buffer> {
       // <bytes>
       if (integer(ctx, len)) {
         if (crlf(ctx)) {
-          res.value = ctx.buf.slice(ctx.offset, ctx.offset + len.value);
-          ctx.offset += len.value; // skip bytes len
-          if (crlf(ctx)) {
-            return true;
+          if (ctx.buf.length - ctx.offset >= len.value) {
+            res.value = ctx.buf.slice(ctx.offset, ctx.offset + len.value);
+            ctx.offset += len.value; // skip bytes len
+            if (crlf(ctx)) {
+              return true;
+            }
           }
         }
       }
@@ -185,10 +205,8 @@ function buried(ctx: ParseContext, res: Partial<R<number | undefined>>): res is 
           return true;
         }
       }
-    } else {
-      if (crlf(ctx)) {
-        return true;
-      }
+    } else if (crlf(ctx)) {
+      return true;
     }
   }
   ctx.offset = start;
@@ -228,9 +246,9 @@ function watching(ctx: ParseContext, res: Partial<R<number>>): res is R<number> 
 
 function reserved(ctx: ParseContext, res: Partial<R<[number, Buffer]>>): res is R<[number, Buffer]> {
   const start = ctx.offset;
-  const id: Partial<R<number>> = {};
   if (token(ctx, M.RESERVED)) {
     if (space(ctx)) {
+      const id: Partial<R<number>> = {};
       if (integer(ctx, id)) {
         // <id>
         if (space(ctx)) {
@@ -238,20 +256,18 @@ function reserved(ctx: ParseContext, res: Partial<R<[number, Buffer]>>): res is 
           if (integer(ctx, len)) {
             // <bytes>
             if (crlf(ctx)) {
-              res.value = [id.value, ctx.buf.slice(ctx.offset, ctx.offset + len.value)];
-              ctx.offset += len.value; // skip bytes
-              if (crlf(ctx)) {
-                return true;
+              if (ctx.buf.length - ctx.offset >= len.value) {
+                res.value = [id.value, ctx.buf.slice(ctx.offset, ctx.offset + len.value)];
+                ctx.offset += len.value; // skip bytes
+                if (crlf(ctx)) {
+                  return true;
+                }
               }
             }
           }
         }
       }
     }
-    if (id.value) {
-      throw new BeanstalkClientError('Malformed RESERVED message', { id: id.value });
-    }
-    throw new BeanstalkClientError('Malformed RESERVED message');
   }
   ctx.offset = start;
   return false;

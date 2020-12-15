@@ -1,6 +1,6 @@
 {
   "name": "@beanstalk/core",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Yet another Beanstalkd client library",
   "repository": "https://github.com/maxleiko/beanstalk-core",
   "author": "Maxime Tricoire <max.tricoire@gmail.com>",
@@ -31,5 +31,7 @@
     "typedoc": "^0.19.0",
     "typescript": "^4.0.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "jackd": "^1.2.4"
+  }
 }

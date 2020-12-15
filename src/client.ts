@@ -4,6 +4,7 @@ import { IPutOptions, IReleaseOptions, Msg } from './types';
 import { BeanstalkError } from './error';
 import { M, parse } from './protocol';
 import { yamlList, yamlMap } from './yaml-parser';
+import { ParseContext } from './internal_types';
 
 const PUT_DEFAULT: IPutOptions = { priority: 0, delay: 0, ttr: 60 };
 const REL_DEFAULT: IReleaseOptions = { priority: 0, delay: 0 };
@@ -18,21 +19,16 @@ export class BeanstalkClient {
     this._socket = new Socket();
     this._pendingRequests = [];
 
+    const messages: Msg[] = [];
+    const ctx = new ParseContext();
     this._socket.on('data', (chunk) => {
-      try {
-        const msg = parse(chunk);
-        const emitter = this._pendingRequests[0];
+      ctx.append(chunk);
+      parse(ctx, messages);
+      while (messages.length > 0) {
+        const emitter = this._pendingRequests.shift();
         if (emitter) {
+          const msg = messages.shift();
           emitter.emit('resolve', msg);
-          this._pendingRequests.shift();
-        } else {
-          console.error(`@beanstalk/core lost msg [code=${msg.code}]`);
-        }
-      } catch (err) {
-        const emitter = this._pendingRequests[0];
-        if (emitter) {
-          emitter.emit('reject', err);
-          this._pendingRequests.shift();
         }
       }
     });

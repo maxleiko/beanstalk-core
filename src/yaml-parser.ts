@@ -5,7 +5,7 @@ import { Scalar } from './types';
 export class YAMLParseError extends Error {}
 
 export function yamlList(buf: Buffer): string[] {
-  const ctx: ParseContext = { buf, offset: 0 };
+  const ctx = new ParseContext(buf);
   const list: string[] = [];
   if (yamlStart(ctx)) {
     while (ctx.offset < ctx.buf.length) {
@@ -22,7 +22,7 @@ export function yamlList(buf: Buffer): string[] {
 
 export function yamlMap(buf: Buffer): Record<string, Scalar> {
   const map: Record<string, Scalar> = {};
-  const ctx: ParseContext = { buf, offset: 0 };
+  const ctx = new ParseContext(buf);
   if (yamlStart(ctx)) {
     while (ctx.offset < ctx.buf.length) {
       const res: Partial<R<[string, Scalar]>> = {};

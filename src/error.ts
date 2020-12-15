@@ -7,7 +7,7 @@ export class BeanstalkError extends Error {
 }
 
 export class BeanstalkClientError extends Error {
-  constructor(msg: string, readonly data?: Record<string, string | number>) {
+  constructor(msg: string, readonly data?: { id: number }) {
     super(msg);
   }
 }
