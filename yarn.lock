@@ -1388,11 +1388,6 @@ iterate-value@^1.0.0:
     es-get-iterator "^1.0.2"
     iterate-iterator "^1.0.1"
 
-jackd@^1.2.4:
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/jackd/-/jackd-1.2.4.tgz#7046af91ede7aae80cd4ca1d56e3d94292bee04d"
-  integrity sha512-StzcKRat2pTpQd4HpvpkD0xo8O0P8Yt/I3i7iy/MJBxenqDShkDsV0/jYD/Dgx8Xh8wpa62s2pIdH4MwkmB9LQ==
-
 jest-diff@^25.2.1:
   version "25.5.0"
   resolved "https://registry.yarnpkg.com/jest-diff/-/jest-diff-25.5.0.tgz#1dd26ed64f96667c068cef026b677dfa01afcfa9"

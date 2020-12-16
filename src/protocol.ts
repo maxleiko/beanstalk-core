@@ -1,6 +1,7 @@
 import { ParseContext, R } from './internal_types';
 import { Msg, Inserted, Using, Reserved, Ok, Watching, Found, Kicked, Buried } from './types';
 import { space, integer, crlf, string } from './parse-utils';
+import { BeanstalkClientError } from './error';
 
 /**
  * Messages
@@ -246,25 +247,28 @@ function watching(ctx: ParseContext, res: Partial<R<number>>): res is R<number> 
 
 function reserved(ctx: ParseContext, res: Partial<R<[number, Buffer]>>): res is R<[number, Buffer]> {
   const start = ctx.offset;
+  const id: Partial<R<number>> = {};
   if (token(ctx, M.RESERVED)) {
     if (space(ctx)) {
-      const id: Partial<R<number>> = {};
+      // <id>
       if (integer(ctx, id)) {
-        // <id>
         if (space(ctx)) {
           const len: Partial<R<number>> = {};
+          // <bytes>
           if (integer(ctx, len)) {
-            // <bytes>
             if (crlf(ctx)) {
               if (ctx.buf.length - ctx.offset >= len.value) {
                 res.value = [id.value, ctx.buf.slice(ctx.offset, ctx.offset + len.value)];
                 ctx.offset += len.value; // skip bytes
                 if (crlf(ctx)) {
                   return true;
-                } else if (ctx.buf.length - ctx.offset === 2) {
-                  // resilience / dirty hack
-                  ctx.offset += 2;
-                  return true;
+                } else {
+                  let data;
+                  if (id.value) {
+                    data = { id: id.value };
+                  }
+                  ctx.clear();
+                  throw new BeanstalkClientError(`Malformed ${M.RESERVED} response message`, data);
                 }
               }
             }

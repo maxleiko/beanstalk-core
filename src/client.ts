@@ -23,12 +23,19 @@ export class BeanstalkClient {
     const ctx = new ParseContext();
     this._socket.on('data', (chunk) => {
       ctx.append(chunk);
-      parse(ctx, messages);
-      while (messages.length > 0) {
+      try {
+        parse(ctx, messages);
+        while (messages.length > 0) {
+          const emitter = this._pendingRequests.shift();
+          if (emitter) {
+            const msg = messages.shift();
+            emitter.emit('resolve', msg);
+          }
+        }
+      } catch (err) {
         const emitter = this._pendingRequests.shift();
         if (emitter) {
-          const msg = messages.shift();
-          emitter.emit('resolve', msg);
+          emitter.emit('reject', err);
         }
       }
     });

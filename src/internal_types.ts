@@ -25,6 +25,11 @@ export class ParseContext {
     this._buf = Buffer.from(this._buf.slice(this.offset));
     this.offset = 0;
   }
+
+  clear(): void {
+    this._buf = Buffer.from([]);
+    this.offset = 0;
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
